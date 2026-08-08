@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reaction_chain/screens/home_screen.dart';
 import 'package:reaction_chain/screens/local_play_screen.dart';
+import 'package:reaction_chain/theme/app_theme.dart';
 
 void main() {
   runApp(const App());
@@ -22,6 +23,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Reaction Chain',
+      theme: AppTheme.dark,
       home: switch (_screen) {
         // The app uses an manual screen switching approach for navigation.
         // Since Reaction Chain is a game, it does not use a conventional stack.

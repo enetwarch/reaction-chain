@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:reaction_chain/theme/app_dimensions.dart';
 
 class LocalPlayScreen extends StatefulWidget {
   final VoidCallback onBackButtonPress;
@@ -39,39 +39,39 @@ class BotPlayer extends Player {
 }
 
 class _LocalPlayScreenState extends State<LocalPlayScreen> {
-  static final ButtonStyle _buttonStyle = IconButton.styleFrom(
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-    backgroundColor: const Color(0xFF1A1F25),
-    foregroundColor: const Color(0xFFE6E6E6),
-    fixedSize: const Size(100, 100),
-  );
-
   final List<Player> _players = [
     HumanPlayer(color: PlayerColor.red, name: 'Player 1'),
   ];
 
+  void reorderPlayer(int oldIndex, int newIndex) {
+    setState(() {
+      if (newIndex > oldIndex) newIndex -= 1;
+      // To offset the old rendered player element.
+      final player = _players.removeAt(oldIndex);
+      _players.insert(newIndex, player);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F1317),
       body: SafeArea(
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
+          padding: EdgeInsets.symmetric(
+            horizontal: AppDimensions.spacingXl,
+            vertical: AppDimensions.spacingXxl,
+          ),
           child: Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              spacing: 32,
+              mainAxisAlignment: .spaceBetween,
+              crossAxisAlignment: .center,
+              spacing: AppDimensions.spacingXl,
               children: [
                 Text(
                   'Local Play',
                   key: const Key('title'),
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
-                    fontSize: 48,
-                    color: const Color(0xFFE6E6E6),
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(context).textTheme.displayLarge,
                 ),
                 Expanded(
                   child: ConstrainedBox(
@@ -80,18 +80,13 @@ class _LocalPlayScreenState extends State<LocalPlayScreen> {
                       maxWidth: 450,
                     ),
                     child: ReorderableListView(
-                      onReorder: (oldIndex, newIndex) {
-                        setState(() {
-                          if (newIndex > oldIndex) newIndex -= 1;
-                          // To offset the old rendered player element.
-                          final player = _players.removeAt(oldIndex);
-                          _players.insert(newIndex, player);
-                        });
-                      },
+                      onReorder: reorderPlayer,
                       proxyDecorator: (child, index, animation) {
                         return Material(
                           color: Colors.transparent,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(
+                            AppDimensions.radiusSm,
+                          ),
                           clipBehavior: Clip.antiAlias,
                           child: child,
                         );
@@ -100,37 +95,35 @@ class _LocalPlayScreenState extends State<LocalPlayScreen> {
                         for (final (index, player) in _players.indexed)
                           Padding(
                             key: ValueKey(player),
-                            padding: const EdgeInsets.only(bottom: 12),
+                            padding: EdgeInsets.only(
+                              bottom: AppDimensions.spacingMd,
+                            ),
                             child: Material(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(
+                                AppDimensions.radiusSm,
+                              ),
                               clipBehavior: Clip.antiAlias,
                               color: const Color(0xFF1A1F25),
                               child: ListTile(
-                                contentPadding: .all(16),
-                                leading: Icon(
-                                  switch (player) {
-                                    HumanPlayer() => Icons.person_rounded,
-                                    BotPlayer() => Icons.computer_rounded,
-                                  },
-                                  size: 48,
-                                  color: const Color(0xFFE6E6E6),
-                                ),
+                                contentPadding: .all(AppDimensions.spacingLg),
+                                leading: Icon(switch (player) {
+                                  HumanPlayer() => Icons.person_rounded,
+                                  BotPlayer() => Icons.computer_rounded,
+                                }, size: AppDimensions.iconMd),
                                 title: Text(
                                   switch (player) {
                                     HumanPlayer(:final name) => name,
                                     BotPlayer(:final level) => 'Level $level',
                                   },
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 24,
-                                    color: const Color(0xFFE6E6E6),
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.displayMedium,
                                 ),
                                 trailing: ReorderableDragStartListener(
                                   index: index,
                                   child: const Icon(
                                     Icons.drag_handle_rounded,
-                                    color: Color(0xFFE6E6E6),
+                                    size: AppDimensions.iconSm,
                                   ),
                                 ),
                                 onTap: () {},
@@ -143,18 +136,28 @@ class _LocalPlayScreenState extends State<LocalPlayScreen> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  spacing: 16,
+                  spacing: AppDimensions.spacingLg,
                   children: [
                     IconButton(
                       icon: Transform.rotate(
                         angle: math.pi,
-                        child: const Icon(Icons.play_arrow_rounded, size: 80),
+                        child: const Icon(
+                          Icons.play_arrow_rounded,
+                          size: AppDimensions.iconLg,
+                        ),
                       ),
                       onPressed: widget.onBackButtonPress,
-                      style: _buttonStyle,
+                      style: Theme.of(context).iconButtonTheme.style?.copyWith(
+                        fixedSize: WidgetStatePropertyAll(
+                          AppDimensions.iconButtonLg,
+                        ),
+                      ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.add_rounded, size: 80),
+                      icon: const Icon(
+                        Icons.add_rounded,
+                        size: AppDimensions.iconLg,
+                      ),
                       onPressed: () {
                         if (_players.length >= 4) return;
                         setState(() {
@@ -166,12 +169,23 @@ class _LocalPlayScreenState extends State<LocalPlayScreen> {
                           );
                         });
                       },
-                      style: _buttonStyle,
+                      style: Theme.of(context).iconButtonTheme.style?.copyWith(
+                        fixedSize: WidgetStatePropertyAll(
+                          AppDimensions.iconButtonLg,
+                        ),
+                      ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.play_arrow_rounded, size: 80),
+                      icon: const Icon(
+                        Icons.play_arrow_rounded,
+                        size: AppDimensions.iconLg,
+                      ),
                       onPressed: widget.onPlayButtonPress,
-                      style: _buttonStyle,
+                      style: Theme.of(context).iconButtonTheme.style?.copyWith(
+                        fixedSize: WidgetStatePropertyAll(
+                          AppDimensions.iconButtonLg,
+                        ),
+                      ),
                     ),
                   ],
                 ),
