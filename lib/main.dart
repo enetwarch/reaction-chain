@@ -1,19 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:reaction_chain/screens/home.dart';
+import 'package:reaction_chain/screens/home_screen.dart';
+import 'package:reaction_chain/screens/local_play_screen.dart';
 
 void main() {
   runApp(const App());
 }
 
-class App extends StatelessWidget {
+enum Screen { home, localPlay }
+
+class App extends StatefulWidget {
   const App({super.key});
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  Screen _screen = Screen.home;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-      home: const HomePage(),
+      title: 'Reaction Chain',
+      home: switch (_screen) {
+        // The app uses an manual screen switching approach for navigation.
+        // Since Reaction Chain is a game, it does not use a conventional stack.
+        // This allows free movement between each screen, similar to web apps.
+        Screen.home => HomeScreen(
+          onSettingsButtonPress: () {},
+          onPlayButtonPress: () => setState(() => _screen = Screen.localPlay),
+          onWifiButtonPress: () {},
+        ),
+        Screen.localPlay => LocalPlayScreen(
+          onBackButtonPress: () => setState(() => _screen = Screen.home),
+          onPlayButtonPress: () {},
+        ),
+      },
     );
   }
 }
