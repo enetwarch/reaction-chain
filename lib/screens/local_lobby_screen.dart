@@ -3,18 +3,18 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
 
-class LocalPlayScreen extends StatefulWidget {
+class LocalLobbyScreen extends StatefulWidget {
   final VoidCallback onBackButtonPress;
   final VoidCallback onPlayButtonPress;
 
-  const LocalPlayScreen({
+  const LocalLobbyScreen({
     super.key,
     required this.onBackButtonPress,
     required this.onPlayButtonPress,
   });
 
   @override
-  State<LocalPlayScreen> createState() => _LocalPlayScreenState();
+  State<LocalLobbyScreen> createState() => _LocalLobbyScreenState();
 }
 
 enum PlayerColor { red, green, blue, yellow }
@@ -38,7 +38,7 @@ class BotPlayer extends Player {
   BotPlayer({required super.color, required this.level});
 }
 
-class _LocalPlayScreenState extends State<LocalPlayScreen> {
+class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
   final List<Player> _players = [
     HumanPlayer(color: PlayerColor.red, name: 'Player 1'),
   ];

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reaction_chain/screens/home_screen.dart';
-import 'package:reaction_chain/screens/local_play_screen.dart';
+import 'package:reaction_chain/screens/local_lobby_screen.dart';
 import 'package:reaction_chain/theme/app_theme.dart';
 
 void main() {
@@ -34,7 +34,7 @@ class _AppState extends State<App> {
           onSettingsButtonPress: () {},
           onCodeButtonPress: () {},
         ),
-        Screen.localPlay => LocalPlayScreen(
+        Screen.localPlay => LocalLobbyScreen(
           onBackButtonPress: () => setState(() => _screen = Screen.home),
           onPlayButtonPress: () {},
         ),
