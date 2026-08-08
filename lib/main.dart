@@ -29,9 +29,10 @@ class _AppState extends State<App> {
         // Since Reaction Chain is a game, it does not use a conventional stack.
         // This allows free movement between each screen, similar to web apps.
         Screen.home => HomeScreen(
-          onSettingsButtonPress: () {},
           onPlayButtonPress: () => setState(() => _screen = Screen.localPlay),
-          onWifiButtonPress: () {},
+          onInfoButtonPress: () {},
+          onSettingsButtonPress: () {},
+          onCodeButtonPress: () {},
         ),
         Screen.localPlay => LocalPlayScreen(
           onBackButtonPress: () => setState(() => _screen = Screen.home),

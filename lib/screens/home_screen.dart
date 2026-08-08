@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
 
 class HomeScreen extends StatelessWidget {
-  final VoidCallback onSettingsButtonPress;
   final VoidCallback onPlayButtonPress;
-  final VoidCallback onWifiButtonPress;
+  final VoidCallback onInfoButtonPress;
+  final VoidCallback onSettingsButtonPress;
+  final VoidCallback onCodeButtonPress;
 
   const HomeScreen({
     super.key,
-    required this.onSettingsButtonPress,
     required this.onPlayButtonPress,
-    required this.onWifiButtonPress,
+    required this.onInfoButtonPress,
+    required this.onSettingsButtonPress,
+    required this.onCodeButtonPress,
   });
 
   @override
@@ -34,53 +36,54 @@ class HomeScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.displayLarge,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  spacing: AppDimensions.spacingLg,
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.settings_rounded,
-                        size: AppDimensions.iconLg,
-                      ),
-                      onPressed: onSettingsButtonPress,
-                      style: Theme.of(context).iconButtonTheme.style?.copyWith(
-                        fixedSize: WidgetStatePropertyAll(
-                          AppDimensions.iconButtonLg,
-                        ),
-                      ),
+                IconButton(
+                  icon: Icon(
+                    Icons.play_arrow_rounded,
+                    size: AppDimensions.iconXl,
+                  ),
+                  onPressed: onPlayButtonPress,
+                  style: Theme.of(context).iconButtonTheme.style?.copyWith(
+                    fixedSize: WidgetStatePropertyAll(
+                      AppDimensions.iconButtonXl,
                     ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.play_arrow_rounded,
-                        size: AppDimensions.iconLg,
-                      ),
-                      onPressed: onPlayButtonPress,
-                      style: Theme.of(context).iconButtonTheme.style?.copyWith(
-                        fixedSize: WidgetStatePropertyAll(
-                          AppDimensions.iconButtonLg,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.wifi_rounded,
-                        size: AppDimensions.iconLg,
-                      ),
-                      onPressed: onWifiButtonPress,
-                      style: Theme.of(context).iconButtonTheme.style?.copyWith(
-                        fixedSize: WidgetStatePropertyAll(
-                          AppDimensions.iconButtonLg,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
+                _buttonRow(context),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buttonRow(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      spacing: AppDimensions.spacingLg,
+      children: [
+        IconButton(
+          icon: Icon(Icons.info_rounded, size: AppDimensions.iconLg),
+          onPressed: onInfoButtonPress,
+          style: Theme.of(context).iconButtonTheme.style?.copyWith(
+            fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonLg),
+          ),
+        ),
+        IconButton(
+          icon: Icon(Icons.settings_rounded, size: AppDimensions.iconLg),
+          onPressed: onSettingsButtonPress,
+          style: Theme.of(context).iconButtonTheme.style?.copyWith(
+            fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonLg),
+          ),
+        ),
+        IconButton(
+          icon: Icon(Icons.code_rounded, size: AppDimensions.iconLg),
+          onPressed: onCodeButtonPress,
+          style: Theme.of(context).iconButtonTheme.style?.copyWith(
+            fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonLg),
+          ),
+        ),
+      ],
     );
   }
 }
