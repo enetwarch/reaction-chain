@@ -43,10 +43,11 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
     HumanPlayer(color: PlayerColor.red, name: 'Player 1'),
   ];
 
-  void reorderPlayer(int oldIndex, int newIndex) {
+  void _reorderPlayer(int oldIndex, int newIndex) {
     setState(() {
-      if (newIndex > oldIndex) newIndex -= 1;
       // To offset the old rendered player element.
+      if (newIndex > oldIndex) newIndex -= 1;
+
       final player = _players.removeAt(oldIndex);
       _players.insert(newIndex, player);
     });
@@ -56,144 +57,155 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: AppDimensions.spacingXl,
-            vertical: AppDimensions.spacingXxl,
-          ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: .spaceBetween,
-              crossAxisAlignment: .center,
-              spacing: AppDimensions.spacingXl,
-              children: [
-                Text(
-                  'Local Play',
-                  key: const Key('title'),
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.displayLarge,
-                ),
-                Expanded(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      minWidth: 300,
-                      maxWidth: 450,
+        child: Stack(
+          children: [
+            Positioned(
+              top: AppDimensions.spacingLg,
+              left: AppDimensions.spacingLg,
+              child: IconButton(
+                icon: Transform.translate(
+                  // Rotate will off-center the icon, this will center it back.
+                  offset: const Offset(2, 1),
+                  child: Transform.rotate(
+                    angle: math.pi,
+                    child: const Icon(
+                      Icons.play_arrow_rounded,
+                      size: AppDimensions.iconSm,
                     ),
-                    child: ReorderableListView(
-                      onReorder: reorderPlayer,
-                      proxyDecorator: (child, index, animation) {
-                        return Material(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.circular(
-                            AppDimensions.radiusSm,
-                          ),
-                          clipBehavior: Clip.antiAlias,
-                          child: child,
-                        );
-                      },
-                      children: [
-                        for (final (index, player) in _players.indexed)
-                          Padding(
-                            key: ValueKey(player),
-                            padding: EdgeInsets.only(
-                              bottom: AppDimensions.spacingMd,
-                            ),
-                            child: Material(
+                  ),
+                ),
+                onPressed: widget.onBackButtonPress,
+                style: Theme.of(context).iconButtonTheme.style?.copyWith(
+                  fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonSm),
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: AppDimensions.spacingXl,
+                vertical: AppDimensions.spacingXxl,
+              ),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  spacing: AppDimensions.spacingXl,
+                  children: [
+                    Text(
+                      'Local\nLobby',
+                      key: const Key('title'),
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.displayLarge,
+                    ),
+                    Expanded(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          minWidth: 300,
+                          maxWidth: 450,
+                        ),
+                        child: ReorderableListView(
+                          onReorder: _reorderPlayer,
+                          proxyDecorator: (child, index, animation) {
+                            return Material(
+                              color: Colors.transparent,
                               borderRadius: BorderRadius.circular(
                                 AppDimensions.radiusSm,
                               ),
                               clipBehavior: Clip.antiAlias,
-                              color: const Color(0xFF1A1F25),
-                              child: ListTile(
-                                contentPadding: .all(AppDimensions.spacingLg),
-                                leading: Icon(switch (player) {
-                                  HumanPlayer() => Icons.person_rounded,
-                                  BotPlayer() => Icons.computer_rounded,
-                                }, size: AppDimensions.iconMd),
-                                title: Text(
-                                  switch (player) {
-                                    HumanPlayer(:final name) => name,
-                                    BotPlayer(:final level) => 'Level $level',
-                                  },
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.displayMedium,
+                              child: child,
+                            );
+                          },
+                          children: [
+                            for (final (index, player) in _players.indexed)
+                              Padding(
+                                key: ValueKey(player),
+                                padding: EdgeInsets.only(
+                                  bottom: AppDimensions.spacingMd,
                                 ),
-                                trailing: ReorderableDragStartListener(
-                                  index: index,
-                                  child: const Icon(
-                                    Icons.drag_handle_rounded,
-                                    size: AppDimensions.iconSm,
-                                  ),
-                                ),
-                                onTap: () {},
+                                child: _playerListTile(context, index, player),
                               ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  spacing: AppDimensions.spacingLg,
-                  children: [
-                    IconButton(
-                      icon: Transform.rotate(
-                        angle: math.pi,
-                        child: const Icon(
-                          Icons.play_arrow_rounded,
-                          size: AppDimensions.iconLg,
-                        ),
-                      ),
-                      onPressed: widget.onBackButtonPress,
-                      style: Theme.of(context).iconButtonTheme.style?.copyWith(
-                        fixedSize: WidgetStatePropertyAll(
-                          AppDimensions.iconButtonLg,
+                          ],
                         ),
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.add_rounded,
-                        size: AppDimensions.iconLg,
-                      ),
-                      onPressed: () {
-                        if (_players.length >= 4) return;
-                        setState(() {
-                          _players.add(
-                            HumanPlayer(
-                              color: PlayerColor.blue,
-                              name: 'Player ${_players.length + 1}',
-                            ),
-                          );
-                        });
-                      },
-                      style: Theme.of(context).iconButtonTheme.style?.copyWith(
-                        fixedSize: WidgetStatePropertyAll(
-                          AppDimensions.iconButtonLg,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.play_arrow_rounded,
-                        size: AppDimensions.iconLg,
-                      ),
-                      onPressed: widget.onPlayButtonPress,
-                      style: Theme.of(context).iconButtonTheme.style?.copyWith(
-                        fixedSize: WidgetStatePropertyAll(
-                          AppDimensions.iconButtonLg,
-                        ),
-                      ),
-                    ),
+                    _actionButtonRow(context),
                   ],
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget _playerListTile(BuildContext context, int index, Player player) {
+    return Material(
+      borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+      clipBehavior: Clip.antiAlias,
+      color: const Color(0xFF1A1F25),
+      child: ListTile(
+        contentPadding: .all(AppDimensions.spacingLg),
+        leading: Icon(switch (player) {
+          HumanPlayer() => Icons.person_rounded,
+          BotPlayer() => Icons.computer_rounded,
+        }, size: AppDimensions.iconMd),
+        title: Text(switch (player) {
+          HumanPlayer(:final name) => name,
+          BotPlayer(:final level) => 'Level $level',
+        }, style: Theme.of(context).textTheme.displayMedium),
+        trailing: ReorderableDragStartListener(
+          index: index,
+          child: const Icon(
+            Icons.drag_handle_rounded,
+            size: AppDimensions.iconSm,
+          ),
+        ),
+        onTap: () {},
+      ),
+    );
+  }
+
+  Widget _actionButtonRow(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      spacing: AppDimensions.spacingLg,
+      children: [
+        IconButton(
+          icon: const Icon(Icons.person_rounded, size: AppDimensions.iconLg),
+          onPressed: () {
+            if (_players.length >= 4) return;
+            setState(() {
+              _players.add(
+                HumanPlayer(
+                  color: PlayerColor.blue,
+                  name: 'Player ${_players.length + 1}',
+                ),
+              );
+            });
+          },
+          style: Theme.of(context).iconButtonTheme.style?.copyWith(
+            fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonLg),
+          ),
+        ),
+        IconButton(
+          icon: const Icon(
+            Icons.play_arrow_rounded,
+            size: AppDimensions.iconLg,
+          ),
+          onPressed: widget.onPlayButtonPress,
+          style: Theme.of(context).iconButtonTheme.style?.copyWith(
+            fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonLg),
+          ),
+        ),
+        IconButton(
+          icon: const Icon(Icons.smart_toy_rounded, size: AppDimensions.iconLg),
+          onPressed: () {},
+          style: Theme.of(context).iconButtonTheme.style?.copyWith(
+            fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonLg),
+          ),
+        ),
+      ],
     );
   }
 }
