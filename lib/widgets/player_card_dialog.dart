@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reaction_chain/screens/local_lobby_screen.dart';
+import 'package:reaction_chain/data/player.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
 
 class PlayerCardDialog extends StatelessWidget {
