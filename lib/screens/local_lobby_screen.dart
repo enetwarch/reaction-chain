@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
+import 'package:reaction_chain/widgets/player_card_dialog.dart';
 
 class LocalLobbyScreen extends StatefulWidget {
   final VoidCallback onBackButtonPress;
@@ -82,14 +83,14 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
             ),
             Container(
               padding: EdgeInsets.symmetric(
-                horizontal: AppDimensions.spacingXl,
-                vertical: AppDimensions.spacingXxl,
+                horizontal: AppDimensions.spacingXxl,
+                vertical: AppDimensions.spacingXxxl,
               ),
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  spacing: AppDimensions.spacingXl,
+                  spacing: AppDimensions.spacingXxl,
                   children: [
                     Text(
                       'Local\nLobby',
@@ -101,7 +102,7 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(
                           minWidth: 300,
-                          maxWidth: 450,
+                          maxWidth: 420,
                         ),
                         child: ReorderableListView(
                           onReorder: _reorderPlayer,
@@ -161,7 +162,23 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
             size: AppDimensions.iconSm,
           ),
         ),
-        onTap: () {},
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (context) => PlayerCardDialog(
+              player: player,
+              onDelete: () {
+                setState(() {
+                  _players.removeAt(index);
+                });
+                Navigator.of(context).pop();
+              },
+              onClose: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          );
+        },
       ),
     );
   }

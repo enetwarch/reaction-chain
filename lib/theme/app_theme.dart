@@ -30,6 +30,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           backgroundColor: const Color(0xFF1A1F25),
           foregroundColor: const Color(0xFFE6E6E6),
+          padding: const EdgeInsets.all(0),
         ),
       ),
       listTileTheme: ListTileThemeData(iconColor: const Color(0xFFE6E6E6)),

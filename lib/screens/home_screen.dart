@@ -21,14 +21,14 @@ class HomeScreen extends StatelessWidget {
       body: SafeArea(
         child: Container(
           padding: .symmetric(
-            horizontal: AppDimensions.spacingXl,
-            vertical: AppDimensions.spacingXxl,
+            horizontal: AppDimensions.spacingXxl,
+            vertical: AppDimensions.spacingXxxl,
           ),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
-              spacing: AppDimensions.spacingXl,
+              spacing: AppDimensions.spacingXxl,
               children: [
                 Text(
                   'Reaction\nChain',
