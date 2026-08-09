@@ -5,14 +5,7 @@ import 'package:reaction_chain/theme/app_dimensions.dart';
 import 'package:reaction_chain/widgets/player_card_dialog.dart';
 
 class LocalLobbyScreen extends StatefulWidget {
-  final VoidCallback onBackButtonPress;
-  final VoidCallback onPlayButtonPress;
-
-  const LocalLobbyScreen({
-    super.key,
-    required this.onBackButtonPress,
-    required this.onPlayButtonPress,
-  });
+  const LocalLobbyScreen({super.key});
 
   @override
   State<LocalLobbyScreen> createState() => _LocalLobbyScreenState();
@@ -75,7 +68,9 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
                     ),
                   ),
                 ),
-                onPressed: widget.onBackButtonPress,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
                 style: Theme.of(context).iconButtonTheme.style?.copyWith(
                   fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonSm),
                 ),
@@ -210,7 +205,7 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
             Icons.play_arrow_rounded,
             size: AppDimensions.iconLg,
           ),
-          onPressed: widget.onPlayButtonPress,
+          onPressed: () {},
           style: Theme.of(context).iconButtonTheme.style?.copyWith(
             fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonLg),
           ),

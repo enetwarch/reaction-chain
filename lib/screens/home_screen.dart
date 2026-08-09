@@ -1,19 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:reaction_chain/screens/local_lobby_screen.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
 
 class HomeScreen extends StatelessWidget {
-  final VoidCallback onPlayButtonPress;
-  final VoidCallback onInfoButtonPress;
-  final VoidCallback onSettingsButtonPress;
-  final VoidCallback onCodeButtonPress;
-
-  const HomeScreen({
-    super.key,
-    required this.onPlayButtonPress,
-    required this.onInfoButtonPress,
-    required this.onSettingsButtonPress,
-    required this.onCodeButtonPress,
-  });
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +31,24 @@ class HomeScreen extends StatelessWidget {
                     Icons.play_arrow_rounded,
                     size: AppDimensions.iconXl,
                   ),
-                  onPressed: onPlayButtonPress,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LocalLobbyScreen(),
+                      ),
+                    );
+                  },
                   style: Theme.of(context).iconButtonTheme.style?.copyWith(
                     fixedSize: WidgetStatePropertyAll(
                       AppDimensions.iconButtonXl,
+                    ),
+                    shape: WidgetStatePropertyAll(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          AppDimensions.radiusMd,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -64,21 +68,21 @@ class HomeScreen extends StatelessWidget {
       children: [
         IconButton(
           icon: Icon(Icons.info_rounded, size: AppDimensions.iconLg),
-          onPressed: onInfoButtonPress,
+          onPressed: () {},
           style: Theme.of(context).iconButtonTheme.style?.copyWith(
             fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonLg),
           ),
         ),
         IconButton(
           icon: Icon(Icons.settings_rounded, size: AppDimensions.iconLg),
-          onPressed: onSettingsButtonPress,
+          onPressed: () {},
           style: Theme.of(context).iconButtonTheme.style?.copyWith(
             fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonLg),
           ),
         ),
         IconButton(
           icon: Icon(Icons.code_rounded, size: AppDimensions.iconLg),
-          onPressed: onCodeButtonPress,
+          onPressed: () {},
           style: Theme.of(context).iconButtonTheme.style?.copyWith(
             fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonLg),
           ),
