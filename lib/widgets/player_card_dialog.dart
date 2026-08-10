@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:reaction_chain/data/player.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
+import 'package:reaction_chain/theme/player_colors.dart';
 
 class PlayerCardDialog extends StatelessWidget {
   final Player player;
   final VoidCallback onDelete;
   final VoidCallback onClose;
+  final void Function(PlayerColor) onColorChange;
 
   const PlayerCardDialog({
     super.key,
     required this.player,
     required this.onDelete,
     required this.onClose,
+    required this.onColorChange,
   });
 
   @override
@@ -76,7 +79,7 @@ class PlayerCardDialog extends StatelessWidget {
                   const SizedBox(height: AppDimensions.spacingXl),
                   _ActionButtonRow(player: player),
                   const SizedBox(height: AppDimensions.spacingXl),
-                  _ColorPicker(selectedColor: player.color),
+                  _ColorPicker(player: player, onColorChange: onColorChange),
                 ],
               ),
             ),
@@ -141,16 +144,10 @@ class _ActionButtonRow extends StatelessWidget {
 }
 
 class _ColorPicker extends StatelessWidget {
-  final PlayerColor selectedColor;
+  final Player player;
+  final void Function(PlayerColor) onColorChange;
 
-  const _ColorPicker({required this.selectedColor});
-
-  static const Map<PlayerColor, Color> colorMap = {
-    PlayerColor.red: Colors.red,
-    PlayerColor.green: Colors.green,
-    PlayerColor.blue: Colors.blue,
-    PlayerColor.yellow: Colors.yellow,
-  };
+  const _ColorPicker({required this.player, required this.onColorChange});
 
   @override
   Widget build(BuildContext context) {
@@ -158,8 +155,12 @@ class _ColorPicker extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: AppDimensions.spacingLg,
       children: [
-        for (final entry in colorMap.entries) ...[
-          _ColorDot(color: entry.value, isSelected: entry.key == selectedColor),
+        for (final color in PlayerColor.values) ...[
+          _ColorDot(
+            color: context.playerColors.resolve(color),
+            isSelected: player.color == color,
+            onTap: () => onColorChange(color),
+          ),
         ],
       ],
     );
@@ -169,27 +170,35 @@ class _ColorPicker extends StatelessWidget {
 class _ColorDot extends StatelessWidget {
   final Color color;
   final bool isSelected;
+  final VoidCallback onTap;
 
-  const _ColorDot({required this.color, required this.isSelected});
+  const _ColorDot({
+    required this.color,
+    required this.isSelected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: AppDimensions.dotMd,
-      height: AppDimensions.dotMd,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: color,
-        border: (isSelected
-            ? Border.all(
-                color: Theme.of(context).colorScheme.onSurface,
-                width: AppDimensions.borderSm,
-                strokeAlign: BorderSide.strokeAlignOutside,
-              )
-            : Border.all(
-                color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                width: AppDimensions.borderSm,
-              )),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: AppDimensions.dotMd,
+        height: AppDimensions.dotMd,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: color,
+          border: (isSelected
+              ? Border.all(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  width: AppDimensions.borderSm,
+                  strokeAlign: BorderSide.strokeAlignOutside,
+                )
+              : Border.all(
+                  color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                  width: AppDimensions.borderSm,
+                )),
+        ),
       ),
     );
   }

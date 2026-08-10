@@ -1,5 +1,6 @@
 // lib/theme/player_colors.dart
 import 'package:flutter/material.dart';
+import 'package:reaction_chain/data/player.dart';
 
 // Separate extension for player colors because there is no semantic
 // name for them in `ThemeData.colorScheme`.
@@ -22,6 +23,13 @@ class PlayerColors extends ThemeExtension<PlayerColors> {
     blue: Color(0xFF3E8FF4),
     yellow: Color(0xFFF4F43E),
   );
+
+  Color resolve(PlayerColor color) => switch (color) {
+    PlayerColor.red => red,
+    PlayerColor.green => green,
+    PlayerColor.blue => blue,
+    PlayerColor.yellow => yellow,
+  };
 
   @override
   PlayerColors copyWith({
@@ -48,4 +56,9 @@ class PlayerColors extends ThemeExtension<PlayerColors> {
       yellow: Color.lerp(yellow, other.yellow, t)!,
     );
   }
+}
+
+// Allows direct calls of `context.playerColors.resolve(color)`.
+extension PlayerColorsContext on BuildContext {
+  PlayerColors get playerColors => Theme.of(this).extension<PlayerColors>()!;
 }
