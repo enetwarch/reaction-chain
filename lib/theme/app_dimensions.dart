@@ -30,4 +30,7 @@ class AppDimensions {
   // Dot sizes
   static const dotSm = 24.0;
   static const dotMd = 36.0;
+
+  // Cell sizes
+  static const cell = 56.0;
 }

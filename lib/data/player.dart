@@ -7,8 +7,9 @@ enum PlayerType { human, bot }
 // The sealed keyword makes it unextendable on other files.
 sealed class Player {
   PlayerColor color;
+  int orbCount;
 
-  Player({required this.color});
+  Player({required this.color, this.orbCount = 0});
 
   String get displayName;
   IconData get displayIcon;

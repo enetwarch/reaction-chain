@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:reaction_chain/controllers/player_list_controller.dart';
 import 'package:reaction_chain/data/player.dart';
+import 'package:reaction_chain/screens/game_screen.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
 import 'package:reaction_chain/theme/player_colors.dart';
 import 'package:reaction_chain/widgets/player_card_dialog.dart';
@@ -181,7 +182,15 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
             Icons.play_arrow_rounded,
             size: AppDimensions.iconLg,
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    GameScreen(players: playerListController.players),
+              ),
+            );
+          },
           style: Theme.of(context).iconButtonTheme.style?.copyWith(
             fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonLg),
           ),
