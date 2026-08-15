@@ -11,8 +11,8 @@ class AppTheme {
       scaffoldBackgroundColor: const Color(0xFF0F1317),
       colorScheme: const ColorScheme.dark(
         surface: Color(0xFF0F1317), // background
-        surfaceContainerHighest: Color(0xFF1A1F25), // surface
-        surfaceContainerHigh: Color(0xFF262C35), // subsurface
+        surfaceContainerLowest: Color(0xFF1A1F25), // surface
+        surfaceContainerLow: Color(0xFF262C35), // subsurface
         onSurface: Color(0xFFE6E6E6), // foreground
         onSurfaceVariant: Color(0x80E6E6E6), // subforeground
         primary: Color(0xFFD178FE), // primary

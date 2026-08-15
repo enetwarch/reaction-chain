@@ -60,7 +60,7 @@ class _TopMenuBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        color: Theme.of(context).colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
       ),
       padding: .symmetric(
@@ -97,7 +97,7 @@ class _TopMenuBar extends StatelessWidget {
                 style: Theme.of(context).iconButtonTheme.style?.copyWith(
                   fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonSm),
                   backgroundColor: WidgetStatePropertyAll(
-                    Theme.of(context).colorScheme.surfaceContainerHigh,
+                    Theme.of(context).colorScheme.surfaceContainerLow,
                   ),
                 ),
               ),
@@ -110,7 +110,7 @@ class _TopMenuBar extends StatelessWidget {
                 style: Theme.of(context).iconButtonTheme.style?.copyWith(
                   fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonSm),
                   backgroundColor: WidgetStatePropertyAll(
-                    Theme.of(context).colorScheme.surfaceContainerHigh,
+                    Theme.of(context).colorScheme.surfaceContainerLow,
                   ),
                 ),
               ),
@@ -135,7 +135,7 @@ class _PlayerScores extends StatelessWidget {
         for (final player in players) ...[
           Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              color: Theme.of(context).colorScheme.surfaceContainerLowest,
               borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
             ),
             padding: EdgeInsets.symmetric(
@@ -178,7 +178,7 @@ class _BoardWidget extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(
-              color: Theme.of(context).colorScheme.surfaceContainerHigh,
+              color: Theme.of(context).colorScheme.surfaceContainerLow,
               width: AppDimensions.borderSm,
             ),
             borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
@@ -220,9 +220,9 @@ class _CellWidget extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          color: Theme.of(context).colorScheme.surfaceContainerLowest,
           border: Border.all(
-            color: Theme.of(context).colorScheme.surfaceContainerHigh,
+            color: Theme.of(context).colorScheme.surfaceContainerLow,
             width: AppDimensions.borderSm,
             strokeAlign: BorderSide.strokeAlignOutside,
           ),
@@ -270,7 +270,7 @@ class _BottomMenuBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        color: Theme.of(context).colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
       ),
       padding: .symmetric(
@@ -297,7 +297,7 @@ class _BottomMenuBar extends StatelessWidget {
                 style: Theme.of(context).iconButtonTheme.style?.copyWith(
                   fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonSm),
                   backgroundColor: WidgetStatePropertyAll(
-                    Theme.of(context).colorScheme.surfaceContainerHigh,
+                    Theme.of(context).colorScheme.surfaceContainerLow,
                   ),
                 ),
               ),
@@ -310,7 +310,7 @@ class _BottomMenuBar extends StatelessWidget {
                 style: Theme.of(context).iconButtonTheme.style?.copyWith(
                   fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonSm),
                   backgroundColor: WidgetStatePropertyAll(
-                    Theme.of(context).colorScheme.surfaceContainerHigh,
+                    Theme.of(context).colorScheme.surfaceContainerLow,
                   ),
                 ),
               ),
@@ -323,7 +323,7 @@ class _BottomMenuBar extends StatelessWidget {
                 style: Theme.of(context).iconButtonTheme.style?.copyWith(
                   fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonSm),
                   backgroundColor: WidgetStatePropertyAll(
-                    Theme.of(context).colorScheme.surfaceContainerHigh,
+                    Theme.of(context).colorScheme.surfaceContainerLow,
                   ),
                 ),
               ),

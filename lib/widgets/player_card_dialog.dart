@@ -30,7 +30,7 @@ class PlayerCardDialog extends StatelessWidget {
       child: Container(
         width: 240,
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerHighest,
+          color: theme.colorScheme.surfaceContainerLowest,
           borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
         ),
         child: Stack(
@@ -104,7 +104,7 @@ class _SmallIconButton extends StatelessWidget {
       style: Theme.of(context).iconButtonTheme.style?.copyWith(
         fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonSm),
         backgroundColor: WidgetStatePropertyAll(
-          Theme.of(context).colorScheme.surfaceContainerHigh,
+          Theme.of(context).colorScheme.surfaceContainerLow,
         ),
       ),
     );
@@ -195,7 +195,7 @@ class _ColorDot extends StatelessWidget {
                   strokeAlign: BorderSide.strokeAlignOutside,
                 )
               : Border.all(
-                  color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                  color: Theme.of(context).colorScheme.surfaceContainerLow,
                   width: AppDimensions.borderSm,
                 )),
         ),
