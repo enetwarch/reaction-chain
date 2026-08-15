@@ -15,45 +15,50 @@ class HomeScreen extends StatelessWidget {
             vertical: AppDimensions.spacingXxxl,
           ),
           child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              spacing: AppDimensions.spacingXxl,
-              children: [
-                Text(
-                  'Reaction\nChain',
-                  key: const Key('title'),
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.displayLarge,
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.play_arrow_rounded,
-                    size: AppDimensions.iconXl,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: AppDimensions.maxWidth,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                spacing: AppDimensions.spacingXxl,
+                children: [
+                  Text(
+                    'Reaction\nChain',
+                    key: const Key('title'),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.displayLarge,
                   ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LocalLobbyScreen(),
-                      ),
-                    );
-                  },
-                  style: Theme.of(context).iconButtonTheme.style?.copyWith(
-                    fixedSize: WidgetStatePropertyAll(
-                      AppDimensions.iconButtonXl,
+                  IconButton(
+                    icon: Icon(
+                      Icons.play_arrow_rounded,
+                      size: AppDimensions.iconXl,
                     ),
-                    shape: WidgetStatePropertyAll(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          AppDimensions.radiusMd,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LocalLobbyScreen(),
+                        ),
+                      );
+                    },
+                    style: Theme.of(context).iconButtonTheme.style?.copyWith(
+                      fixedSize: WidgetStatePropertyAll(
+                        AppDimensions.iconButtonXl,
+                      ),
+                      shape: WidgetStatePropertyAll(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            AppDimensions.radiusMd,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                _buttonRow(context),
-              ],
+                  _buttonRow(context),
+                ],
+              ),
             ),
           ),
         ),

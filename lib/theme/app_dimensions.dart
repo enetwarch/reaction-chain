@@ -33,4 +33,8 @@ class AppDimensions {
 
   // Cell sizes
   static const cell = 56.0;
+
+  // Screen sizes
+  static const overlayWidthMd = 240.0;
+  static const maxWidth = 480.0;
 }

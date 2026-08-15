@@ -46,22 +46,27 @@ class _GameScreenState extends State<GameScreen> {
             child: Container(
               padding: EdgeInsets.all(AppDimensions.spacingXxl),
               child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      spacing: AppDimensions.spacingMd,
-                      children: [
-                        _TopMenuBar(turnPlayer: gameController.currentPlayer),
-                        _PlayerScores(players: gameController.players),
-                      ],
-                    ),
-                    _BoardWidget(
-                      gameController: gameController,
-                      onCellTap: onCellTap,
-                    ),
-                    _BottomMenuBar(turnNumber: gameController.turnNumber),
-                  ],
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth: AppDimensions.maxWidth,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        spacing: AppDimensions.spacingMd,
+                        children: [
+                          _TopMenuBar(turnPlayer: gameController.currentPlayer),
+                          _PlayerScores(players: gameController.players),
+                        ],
+                      ),
+                      _BoardWidget(
+                        gameController: gameController,
+                        onCellTap: onCellTap,
+                      ),
+                      _BottomMenuBar(turnNumber: gameController.turnNumber),
+                    ],
+                  ),
                 ),
               ),
             ),

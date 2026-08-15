@@ -46,54 +46,54 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
       builder: (context, child) {
         return Scaffold(
           body: SafeArea(
-            child: Stack(
-              children: [
-                Positioned(
-                  top: AppDimensions.spacingLg,
-                  left: AppDimensions.spacingLg,
-                  child: IconButton(
-                    icon: Transform.translate(
-                      // Rotate will off-center the icon, this will center it back.
-                      offset: const Offset(2, 1),
-                      child: Transform.rotate(
-                        angle: math.pi,
-                        child: const Icon(
-                          Icons.play_arrow_rounded,
-                          size: AppDimensions.iconSm,
-                        ),
-                      ),
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                    style: Theme.of(context).iconButtonTheme.style?.copyWith(
-                      fixedSize: WidgetStatePropertyAll(
-                        AppDimensions.iconButtonSm,
-                      ),
-                    ),
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: AppDimensions.spacingXxl,
+                vertical: AppDimensions.spacingXxxl,
+              ),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth: AppDimensions.maxWidth,
                   ),
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppDimensions.spacingXxl,
-                    vertical: AppDimensions.spacingXxxl,
-                  ),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      spacing: AppDimensions.spacingXxl,
-                      children: [
-                        Text(
-                          'Local\nLobby',
-                          key: const Key('title'),
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.displayLarge,
-                        ),
-                        Expanded(
-                          child: ConstrainedBox(
-                            constraints: const BoxConstraints(
-                              minWidth: 300,
-                              maxWidth: 420,
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        top: AppDimensions.spacingLg,
+                        left: AppDimensions.spacingLg,
+                        child: IconButton(
+                          icon: Transform.translate(
+                            // Rotate will off-center the icon, this will center it back.
+                            offset: const Offset(2, 1),
+                            child: Transform.rotate(
+                              angle: math.pi,
+                              child: const Icon(
+                                Icons.play_arrow_rounded,
+                                size: AppDimensions.iconSm,
+                              ),
                             ),
+                          ),
+                          onPressed: () => Navigator.pop(context),
+                          style: Theme.of(context).iconButtonTheme.style
+                              ?.copyWith(
+                                fixedSize: WidgetStatePropertyAll(
+                                  AppDimensions.iconButtonSm,
+                                ),
+                              ),
+                        ),
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        spacing: AppDimensions.spacingXxl,
+                        children: [
+                          Text(
+                            'Local\nLobby',
+                            key: const Key('title'),
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.displayLarge,
+                          ),
+                          Expanded(
                             child: ReorderableListView(
                               onReorder: playerListController.reorderPlayer,
                               proxyDecorator: (child, index, animation) {
@@ -123,13 +123,13 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
                               ],
                             ),
                           ),
-                        ),
-                        _actionButtonRow(context),
-                      ],
-                    ),
+                          _actionButtonRow(context),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
           ),
         );
