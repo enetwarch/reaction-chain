@@ -61,25 +61,8 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
                       Positioned(
                         top: AppDimensions.spacingLg,
                         left: AppDimensions.spacingLg,
-                        child: IconButton(
-                          icon: Transform.translate(
-                            // Rotate will off-center the icon, this will center it back.
-                            offset: const Offset(2, 1),
-                            child: Transform.rotate(
-                              angle: math.pi,
-                              child: const Icon(
-                                Icons.play_arrow_rounded,
-                                size: AppDimensions.iconSm,
-                              ),
-                            ),
-                          ),
+                        child: _BackButton(
                           onPressed: () => Navigator.pop(context),
-                          style: Theme.of(context).iconButtonTheme.style
-                              ?.copyWith(
-                                fixedSize: WidgetStatePropertyAll(
-                                  AppDimensions.iconButtonSm,
-                                ),
-                              ),
                         ),
                       ),
                       Column(
@@ -114,16 +97,31 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
                                     padding: EdgeInsets.only(
                                       bottom: AppDimensions.spacingMd,
                                     ),
-                                    child: _playerListTile(
-                                      context,
-                                      index,
-                                      player,
+                                    child: _PlayerListTile(
+                                      player: player,
+                                      index: index,
+                                      onTap: () => managePlayer(index),
                                     ),
                                   ),
                               ],
                             ),
                           ),
-                          _actionButtonRow(context),
+                          _ActionButtonRow(
+                            onPerson: () {
+                              playerListController.addPlayer(PlayerType.human);
+                            },
+                            onPlay: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => GameScreen(
+                                    players: playerListController.players,
+                                  ),
+                                ),
+                              );
+                            },
+                            onBot: () {},
+                          ),
                         ],
                       ),
                     ],
@@ -136,8 +134,48 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
       },
     );
   }
+}
 
-  Widget _playerListTile(BuildContext context, int index, Player player) {
+class _BackButton extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  const _BackButton({required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Transform.translate(
+        // Rotate will off-center the icon, this will center it back.
+        offset: const Offset(2, 1),
+        child: Transform.rotate(
+          angle: math.pi,
+          child: const Icon(
+            Icons.play_arrow_rounded,
+            size: AppDimensions.iconSm,
+          ),
+        ),
+      ),
+      onPressed: onPressed,
+      style: Theme.of(context).iconButtonTheme.style?.copyWith(
+        fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonSm),
+      ),
+    );
+  }
+}
+
+class _PlayerListTile extends StatelessWidget {
+  final Player player;
+  final int index;
+  final VoidCallback onTap;
+
+  const _PlayerListTile({
+    required this.player,
+    required this.index,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Material(
       borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
       clipBehavior: Clip.antiAlias,
@@ -160,19 +198,32 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
             size: AppDimensions.iconSm,
           ),
         ),
-        onTap: () => managePlayer(index),
+        onTap: onTap,
       ),
     );
   }
+}
 
-  Widget _actionButtonRow(BuildContext context) {
+class _ActionButtonRow extends StatelessWidget {
+  final VoidCallback onPerson;
+  final VoidCallback onPlay;
+  final VoidCallback onBot;
+
+  const _ActionButtonRow({
+    required this.onPerson,
+    required this.onPlay,
+    required this.onBot,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: AppDimensions.spacingLg,
       children: [
         IconButton(
           icon: const Icon(Icons.person_rounded, size: AppDimensions.iconLg),
-          onPressed: () => playerListController.addPlayer(PlayerType.human),
+          onPressed: onPerson,
           style: Theme.of(context).iconButtonTheme.style?.copyWith(
             fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonLg),
           ),
@@ -182,22 +233,14 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
             Icons.play_arrow_rounded,
             size: AppDimensions.iconLg,
           ),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    GameScreen(players: playerListController.players),
-              ),
-            );
-          },
+          onPressed: onPlay,
           style: Theme.of(context).iconButtonTheme.style?.copyWith(
             fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonLg),
           ),
         ),
         IconButton(
           icon: const Icon(Icons.smart_toy_rounded, size: AppDimensions.iconLg),
-          onPressed: () {},
+          onPressed: onBot,
           style: Theme.of(context).iconButtonTheme.style?.copyWith(
             fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonLg),
           ),

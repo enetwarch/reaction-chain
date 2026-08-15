@@ -30,12 +30,8 @@ class HomeScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.displayLarge,
                   ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.play_arrow_rounded,
-                      size: AppDimensions.iconXl,
-                    ),
-                    onPressed: () {
+                  _PlayButton(
+                    onPlay: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -43,20 +39,12 @@ class HomeScreen extends StatelessWidget {
                         ),
                       );
                     },
-                    style: Theme.of(context).iconButtonTheme.style?.copyWith(
-                      fixedSize: WidgetStatePropertyAll(
-                        AppDimensions.iconButtonXl,
-                      ),
-                      shape: WidgetStatePropertyAll(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            AppDimensions.radiusMd,
-                          ),
-                        ),
-                      ),
-                    ),
                   ),
-                  _buttonRow(context),
+                  _ActionButtonRow(
+                    onInfo: () {},
+                    onSettings: () {},
+                    onCode: () {},
+                  ),
                 ],
               ),
             ),
@@ -65,8 +53,43 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buttonRow(BuildContext context) {
+class _PlayButton extends StatelessWidget {
+  final VoidCallback onPlay;
+
+  const _PlayButton({required this.onPlay});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.play_arrow_rounded, size: AppDimensions.iconXl),
+      onPressed: onPlay,
+      style: Theme.of(context).iconButtonTheme.style?.copyWith(
+        fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonXl),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ActionButtonRow extends StatelessWidget {
+  final VoidCallback onInfo;
+  final VoidCallback onSettings;
+  final VoidCallback onCode;
+
+  const _ActionButtonRow({
+    required this.onInfo,
+    required this.onSettings,
+    required this.onCode,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: AppDimensions.spacingLg,
