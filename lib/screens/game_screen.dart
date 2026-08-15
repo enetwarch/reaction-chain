@@ -23,30 +23,51 @@ class _GameScreenState extends State<GameScreen> {
     gameController = GameController(players: widget.players);
   }
 
+  void onCellTap(Coordinates coordinates) async {
+    final events = gameController.placeOrb(coordinates);
+    for (final event in events) {
+      await _animateExplosion(event);
+    }
+    gameController.refresh();
+  }
+
+  Future<void> _animateExplosion(ExplosionEvent event) async {
+    gameController.refresh();
+    await Future.delayed(const Duration(milliseconds: 10));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Container(
-          padding: EdgeInsets.all(AppDimensions.spacingXxl),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  spacing: AppDimensions.spacingMd,
+    return ListenableBuilder(
+      listenable: gameController,
+      builder: (context, child) {
+        return Scaffold(
+          body: SafeArea(
+            child: Container(
+              padding: EdgeInsets.all(AppDimensions.spacingXxl),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _TopMenuBar(turnPlayer: gameController.currentPlayer),
-                    _PlayerScores(players: gameController.players),
+                    Column(
+                      spacing: AppDimensions.spacingMd,
+                      children: [
+                        _TopMenuBar(turnPlayer: gameController.currentPlayer),
+                        _PlayerScores(players: gameController.players),
+                      ],
+                    ),
+                    _BoardWidget(
+                      gameController: gameController,
+                      onCellTap: onCellTap,
+                    ),
+                    _BottomMenuBar(turnNumber: gameController.turnNumber),
                   ],
                 ),
-                _BoardWidget(board: gameController.board),
-                _BottomMenuBar(turnNumber: gameController.turn),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -63,27 +84,27 @@ class _TopMenuBar extends StatelessWidget {
         color: Theme.of(context).colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
       ),
-      padding: .symmetric(
-        vertical: AppDimensions.spacingMd,
-        horizontal: AppDimensions.spacingLg,
-      ),
+      padding: EdgeInsets.all(AppDimensions.spacingMd),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            spacing: AppDimensions.spacingMd,
-            children: [
-              Icon(
-                Icons.circle,
-                size: AppDimensions.dotSm,
-                color: context.playerColors.resolve(turnPlayer.color),
-              ),
-              Text(
-                turnPlayer.displayName,
-                style: Theme.of(context).textTheme.displayMedium,
-              ),
-            ],
+          Padding(
+            padding: const EdgeInsets.only(left: AppDimensions.spacingMd),
+            child: Row(
+              spacing: AppDimensions.spacingMd,
+              children: [
+                Icon(
+                  turnPlayer.displayIcon,
+                  size: AppDimensions.iconSm,
+                  color: context.playerColors.resolve(turnPlayer.color),
+                ),
+                Text(
+                  turnPlayer.displayName,
+                  style: Theme.of(context).textTheme.displayMedium,
+                ),
+              ],
+            ),
           ),
           Row(
             spacing: AppDimensions.spacingMd,
@@ -164,12 +185,14 @@ class _PlayerScores extends StatelessWidget {
 }
 
 class _BoardWidget extends StatelessWidget {
-  final Board board;
+  final GameController gameController;
+  final void Function(Coordinates) onCellTap;
 
-  const _BoardWidget({required this.board});
+  const _BoardWidget({required this.gameController, required this.onCellTap});
 
   @override
   Widget build(BuildContext context) {
+    final board = gameController.board;
     return SizedBox(
       width: AppDimensions.cell * board.cols + AppDimensions.borderSm * 2,
       height: AppDimensions.cell * board.rows + AppDimensions.borderSm * 2,
@@ -193,9 +216,14 @@ class _BoardWidget extends StatelessWidget {
             ),
             itemCount: board.rows * board.cols,
             itemBuilder: (context, index) {
-              final row = index ~/ board.cols;
-              final col = index % board.cols;
-              return _CellWidget(cell: board.cells[row][col], onTap: () {});
+              final coordinates = (
+                row: index ~/ board.cols,
+                col: index % board.cols,
+              );
+              return _CellWidget(
+                cell: board.cell(coordinates)!,
+                onTap: () => onCellTap(coordinates),
+              );
             },
           ),
         ),
@@ -244,20 +272,33 @@ class _OrbCluster extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (count == 0 || color == null) return const SizedBox.shrink();
-
-    return Wrap(
-      alignment: WrapAlignment.center,
-      spacing: 2,
-      runSpacing: 2,
+    return Stack(
       children: [
-        for (int i = 0; i < count; i++)
-          Container(
-            width: AppDimensions.dotSm,
-            height: AppDimensions.dotSm,
-            decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+        for (final alignment in _alignmentsFor(count))
+          Align(
+            alignment: alignment,
+            child: Container(
+              width: AppDimensions.dotSm,
+              height: AppDimensions.dotSm,
+              decoration: BoxDecoration(shape: BoxShape.circle, color: color!),
+            ),
           ),
       ],
     );
+  }
+
+  List<Alignment> _alignmentsFor(int count) {
+    return switch (count) {
+      1 => [Alignment.center],
+      2 => [Alignment.centerLeft, Alignment.centerRight],
+      3 => [Alignment.topCenter, Alignment.bottomLeft, Alignment.bottomRight],
+      _ => [
+        Alignment.topLeft,
+        Alignment.topRight,
+        Alignment.bottomLeft,
+        Alignment.bottomRight,
+      ],
+    };
   }
 }
 
@@ -273,17 +314,17 @@ class _BottomMenuBar extends StatelessWidget {
         color: Theme.of(context).colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
       ),
-      padding: .symmetric(
-        vertical: AppDimensions.spacingMd,
-        horizontal: AppDimensions.spacingLg,
-      ),
+      padding: const EdgeInsets.all(AppDimensions.spacingMd),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
-            'Turn ${turnNumber.toString()}',
-            style: Theme.of(context).textTheme.displayMedium,
+          Padding(
+            padding: const EdgeInsets.only(left: AppDimensions.spacingMd),
+            child: Text(
+              'Turn ${turnNumber.toString()}',
+              style: Theme.of(context).textTheme.displayMedium,
+            ),
           ),
           Row(
             spacing: AppDimensions.spacingMd,

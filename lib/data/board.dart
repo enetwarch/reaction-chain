@@ -1,6 +1,7 @@
 import 'package:reaction_chain/data/player.dart';
 
 typedef Coordinates = ({int row, int col});
+typedef Move = ({Player player, Coordinates coordinates});
 
 class Board {
   int rows;

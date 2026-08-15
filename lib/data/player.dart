@@ -8,8 +8,15 @@ enum PlayerType { human, bot }
 sealed class Player {
   PlayerColor color;
   int orbCount;
+  bool hasMoved;
+  bool isOut;
 
-  Player({required this.color, this.orbCount = 0});
+  Player({
+    required this.color,
+    this.orbCount = 0,
+    this.hasMoved = false,
+    this.isOut = false,
+  });
 
   String get displayName;
   IconData get displayIcon;

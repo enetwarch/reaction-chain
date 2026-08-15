@@ -9,35 +9,50 @@ class GameController extends ChangeNotifier {
   static const defaultCols = 6;
   // There is a potential for other game modes.
 
+  final List<Move> _moves = [];
   final List<Player> _players;
   final Board board;
 
   GameController({required List<Player> players, Board? board})
     : _players = players,
       board = board ?? Board(rows: defaultRows, cols: defaultCols);
+  // A board might be initialized elsewhere.
 
+  List<Move> get moves => List.unmodifiable(_moves);
   List<Player> get players => List.unmodifiable(_players);
 
-  int turn = 0;
-  Player get currentPlayer => _players[turn];
+  void refresh() => notifyListeners();
+
+  int turnNumber = 1;
+  int _turnPointer = 0;
+  Player get currentPlayer => _players[_turnPointer];
+  bool get hasWinner =>
+      _players.length > 1 &&
+      _players.where((player) => !player.isOut).length == 1;
 
   List<ExplosionEvent> placeOrb(Coordinates coordinates) {
+    if (hasWinner) return [];
     final cell = board.cell(coordinates)!;
     if (cell.occupant != null && cell.occupant != currentPlayer) return [];
 
     cell.occupant = currentPlayer;
     cell.orbCount++;
+    currentPlayer.hasMoved = true;
+    _moves.add((player: currentPlayer, coordinates: coordinates));
 
     final events = _chainReaction(coordinates);
-    _nextTurn();
     _recalculatePlayerOrbCounts();
-    notifyListeners();
+    _nextTurn();
 
     return events;
   }
 
   void _nextTurn() {
-    turn = (turn + 1) % players.length;
+    turnNumber++;
+    _turnPointer = (_turnPointer + 1) % players.length;
+    while (currentPlayer.isOut) {
+      _turnPointer = (_turnPointer + 1) % players.length;
+    }
   }
 
   List<ExplosionEvent> _chainReaction(Coordinates coordinates) {
@@ -90,6 +105,12 @@ class GameController extends ChangeNotifier {
         if (owner != null) {
           owner.orbCount += cell.orbCount;
         }
+      }
+    }
+
+    for (final player in _players) {
+      if (player.hasMoved && player.orbCount <= 0) {
+        player.isOut = true;
       }
     }
   }
