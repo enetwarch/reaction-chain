@@ -32,8 +32,10 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
             Navigator.of(context).pop();
           },
           onClose: () => Navigator.of(context).pop(),
-          onColorChange: (color) =>
-              playerListController.changePlayerColor(index, color),
+          onColorChange: (newColor) =>
+              playerListController.changePlayerColor(index, newColor),
+          onNameChange: (newName) =>
+              playerListController.changePlayerName(index, newName),
         ),
       ),
     );
@@ -49,7 +51,7 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
             child: Container(
               padding: EdgeInsets.symmetric(
                 horizontal: AppDimensions.spacingXxl,
-                vertical: AppDimensions.spacingXxxl,
+                vertical: AppDimensions.spacingXxl,
               ),
               child: Center(
                 child: ConstrainedBox(
@@ -78,6 +80,7 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
                           ),
                           Expanded(
                             child: ReorderableListView(
+                              buildDefaultDragHandles: false,
                               onReorder: playerListController.reorderPlayer,
                               proxyDecorator: (child, index, animation) {
                                 return Material(
@@ -194,7 +197,7 @@ class _PlayerListTile extends StatelessWidget {
         trailing: ReorderableDragStartListener(
           index: index,
           child: const Icon(
-            Icons.drag_handle_rounded,
+            Icons.drag_indicator_rounded,
             size: AppDimensions.iconSm,
           ),
         ),

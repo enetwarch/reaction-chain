@@ -22,7 +22,7 @@ class AppTheme {
           .copyWith(
             displayLarge: GoogleFonts.poppins(fontSize: 48, fontWeight: .bold),
             displayMedium: GoogleFonts.poppins(fontSize: 24, fontWeight: .bold),
-            displaySmall: GoogleFonts.poppins(fontSize: 16),
+            displaySmall: GoogleFonts.poppins(fontSize: 16, fontWeight: .w500),
           ),
       iconTheme: const IconThemeData(color: Color(0xFFE6E6E6)),
       iconButtonTheme: IconButtonThemeData(

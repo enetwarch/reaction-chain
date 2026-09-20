@@ -8,6 +8,7 @@ class PlayerCardDialog extends StatelessWidget {
   final VoidCallback onDelete;
   final VoidCallback onClose;
   final void Function(PlayerColor) onColorChange;
+  final void Function(String) onNameChange;
 
   const PlayerCardDialog({
     super.key,
@@ -15,6 +16,7 @@ class PlayerCardDialog extends StatelessWidget {
     required this.onDelete,
     required this.onClose,
     required this.onColorChange,
+    required this.onNameChange,
   });
 
   @override
@@ -27,65 +29,252 @@ class PlayerCardDialog extends StatelessWidget {
       insetPadding: const EdgeInsets.symmetric(
         horizontal: AppDimensions.spacingXxl,
       ),
-      child: Container(
-        width: 240,
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerLowest,
-          borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
-        ),
-        child: Stack(
-          children: [
-            Positioned(
-              top: AppDimensions.spacingLg,
-              left: AppDimensions.spacingLg,
-              child: _SmallIconButton(
-                iconData: Icons.delete_rounded,
-                onPressed: onDelete,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minWidth: 240, maxWidth: 300),
+        child: Container(
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surfaceContainerLowest,
+            borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
+          ),
+          child: Stack(
+            children: [
+              Positioned(
+                top: AppDimensions.spacingLg,
+                left: AppDimensions.spacingLg,
+                child: _SmallIconButton(
+                  iconData: Icons.delete_rounded,
+                  onPressed: onDelete,
+                ),
               ),
-            ),
-            Positioned(
-              top: AppDimensions.spacingLg,
-              right: AppDimensions.spacingLg,
-              child: _SmallIconButton(
-                iconData: Icons.close_rounded,
-                onPressed: onClose,
+              Positioned(
+                top: AppDimensions.spacingLg,
+                right: AppDimensions.spacingLg,
+                child: _SmallIconButton(
+                  iconData: Icons.close_rounded,
+                  onPressed: onClose,
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppDimensions.spacingXl,
-                vertical: AppDimensions.spacingXxl,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  switch (player) {
-                    HumanPlayer() => Icon(
-                      Icons.person_rounded,
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppDimensions.spacingXl,
+                  vertical: AppDimensions.spacingXxl,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      player.displayIcon,
                       size: AppDimensions.iconLg,
                       color: theme.colorScheme.onSurface,
                     ),
-                    BotPlayer() => Icon(
-                      Icons.smart_toy_rounded,
-                      size: AppDimensions.iconLg,
-                      color: theme.colorScheme.onSurface,
+                    const SizedBox(height: AppDimensions.spacingSm),
+                    Text(switch (player) {
+                      HumanPlayer(name: final name) => name,
+                      BotPlayer(level: final level) => 'Level $level',
+                    }, style: Theme.of(context).textTheme.displayMedium),
+                    const SizedBox(height: AppDimensions.spacingXl),
+                    switch (player) {
+                      HumanPlayer() => _NameRow(
+                        name: player.displayName,
+                        onNameChange: onNameChange,
+                      ),
+                      BotPlayer() => SizedBox(), // Placeholder, not in MVP.
+                    },
+                    const SizedBox(height: AppDimensions.spacingMd),
+                    _ColorEditRow(
+                      selectedColor: player.color,
+                      onColorChange: onColorChange,
                     ),
-                  },
-                  const SizedBox(height: AppDimensions.spacingSm),
-                  Text(switch (player) {
-                    HumanPlayer(name: final name) => name,
-                    BotPlayer(level: final level) => 'Level $level',
-                  }, style: Theme.of(context).textTheme.displayMedium),
-                  const SizedBox(height: AppDimensions.spacingXl),
-                  _ActionButtonRow(player: player),
-                  const SizedBox(height: AppDimensions.spacingXl),
-                  _ColorPicker(player: player, onColorChange: onColorChange),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+class _NameRow extends StatefulWidget {
+  final String name;
+  final void Function(String) onNameChange;
+
+  const _NameRow({required this.name, required this.onNameChange});
+
+  @override
+  State<_NameRow> createState() => _NameRowState();
+}
+
+class _NameRowState extends State<_NameRow> {
+  late final TextEditingController _controller;
+  bool _isEditing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.name);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    final trimmed = _controller.text.trim();
+    if (trimmed.isNotEmpty) {
+      widget.onNameChange(trimmed);
+    } else {
+      _controller.text = widget.name; // revert if left blank
+    }
+    setState(() => _isEditing = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            height: AppDimensions.iconButtonSm.height,
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDimensions.spacingLg,
+            ),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+            ),
+            alignment: Alignment.centerLeft,
+            child: _isEditing
+                ? TextField(
+                    controller: _controller,
+                    autofocus: true,
+                    style: theme.textTheme.displayMedium,
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      isDense: true,
+                    ),
+                    onSubmitted: (_) => _submit(),
+                  )
+                : Text(
+                    widget.name,
+                    style: theme.textTheme.displayMedium,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+          ),
+        ),
+        const SizedBox(width: AppDimensions.spacingMd),
+        _SmallIconButton(
+          iconData: _isEditing ? Icons.check_rounded : Icons.edit_rounded,
+          onPressed: () {
+            if (_isEditing) {
+              _submit();
+            } else {
+              setState(() => _isEditing = true);
+            }
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _ColorEditRow extends StatelessWidget {
+  final PlayerColor selectedColor;
+  final void Function(PlayerColor) onColorChange;
+
+  const _ColorEditRow({
+    required this.selectedColor,
+    required this.onColorChange,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Row(
+      children: [
+        Theme(
+          data: theme.copyWith(
+            iconButtonTheme: IconButtonThemeData(
+              style: theme.iconButtonTheme.style?.copyWith(
+                backgroundColor: const WidgetStatePropertyAll(
+                  Colors.transparent,
+                ),
+              ),
+            ),
+          ),
+          child: Expanded(
+            child: DropdownMenu<PlayerColor>(
+              expandedInsets: EdgeInsets.zero,
+              initialSelection: selectedColor,
+              onSelected: (color) {
+                if (color != null) onColorChange(color);
+              },
+              textStyle: theme.textTheme.displayMedium,
+              menuStyle: MenuStyle(
+                backgroundColor: WidgetStatePropertyAll(
+                  theme
+                      .colorScheme
+                      .surfaceContainerLow, // matches your defined "subsurface" tier
+                ),
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+                  ),
+                ),
+              ),
+              inputDecorationTheme: InputDecorationTheme(
+                filled: true,
+                fillColor: theme.colorScheme.surfaceContainerLow,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              trailingIcon: Icon(
+                Icons.expand_more_rounded,
+                size: AppDimensions.iconSm,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+              selectedTrailingIcon: Icon(
+                Icons.expand_less_rounded,
+                size: AppDimensions.iconSm,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+              dropdownMenuEntries: [
+                for (final color in PlayerColor.values)
+                  DropdownMenuEntry(
+                    value: color,
+                    label: color.label,
+                    style: MenuItemButton.styleFrom(
+                      textStyle: theme.textTheme.displaySmall,
+                      foregroundColor: theme.colorScheme.onSurface,
+                    ),
+                    leadingIcon: Container(
+                      width: AppDimensions.dotSm,
+                      height: AppDimensions.dotSm,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: context.playerColors.resolve(color),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(width: AppDimensions.spacingMd),
+        _SmallIconButton(
+          iconData: Icons.shuffle_rounded,
+          onPressed: () =>
+              onColorChange(PlayerColor.random(exclude: selectedColor)),
+        ),
+      ],
     );
   }
 }
@@ -105,99 +294,6 @@ class _SmallIconButton extends StatelessWidget {
         fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonSm),
         backgroundColor: WidgetStatePropertyAll(
           Theme.of(context).colorScheme.surfaceContainerLow,
-        ),
-      ),
-    );
-  }
-}
-
-class _ActionButtonRow extends StatelessWidget {
-  final Player player;
-
-  const _ActionButtonRow({required this.player});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      spacing: AppDimensions.spacingMd,
-      children: switch (player) {
-        HumanPlayer() => [
-          _SmallIconButton(onPressed: () {}, iconData: Icons.edit_rounded),
-          _SmallIconButton(onPressed: () {}, iconData: Icons.shuffle_rounded),
-          _SmallIconButton(onPressed: () {}, iconData: Icons.refresh_rounded),
-        ],
-        BotPlayer() => [
-          _SmallIconButton(
-            onPressed: () {},
-            iconData: Icons.arrow_upward_rounded,
-          ),
-          _SmallIconButton(onPressed: () {}, iconData: Icons.shuffle_rounded),
-          _SmallIconButton(
-            onPressed: () {},
-            iconData: Icons.arrow_downward_rounded,
-          ),
-        ],
-      },
-    );
-  }
-}
-
-class _ColorPicker extends StatelessWidget {
-  final Player player;
-  final void Function(PlayerColor) onColorChange;
-
-  const _ColorPicker({required this.player, required this.onColorChange});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      spacing: AppDimensions.spacingLg,
-      children: [
-        for (final color in PlayerColor.values) ...[
-          _ColorDot(
-            color: context.playerColors.resolve(color),
-            isSelected: player.color == color,
-            onTap: () => onColorChange(color),
-          ),
-        ],
-      ],
-    );
-  }
-}
-
-class _ColorDot extends StatelessWidget {
-  final Color color;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _ColorDot({
-    required this.color,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: AppDimensions.dotMd,
-        height: AppDimensions.dotMd,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: color,
-          border: (isSelected
-              ? Border.all(
-                  color: Theme.of(context).colorScheme.onSurface,
-                  width: AppDimensions.borderSm,
-                  strokeAlign: BorderSide.strokeAlignOutside,
-                )
-              : Border.all(
-                  color: Theme.of(context).colorScheme.surfaceContainerLow,
-                  width: AppDimensions.borderSm,
-                )),
         ),
       ),
     );

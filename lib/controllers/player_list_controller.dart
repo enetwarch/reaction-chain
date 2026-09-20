@@ -23,6 +23,8 @@ class PlayerListController extends ChangeNotifier {
       .where((color) => !_players.any((player) => player.color == color))
       .firstOrNull;
 
+  void refresh() => notifyListeners();
+
   void addPlayer(PlayerType type) {
     if (isFull) return;
 
@@ -68,6 +70,17 @@ class PlayerListController extends ChangeNotifier {
       break;
     }
     selectedPlayer.color = newColor;
+
+    notifyListeners();
+  }
+
+  // Only for HumanPlayer players.
+  void changePlayerName(int index, String newName) {
+    Player selectedPlayer = _players[index];
+
+    if (selectedPlayer case HumanPlayer humanPlayer) {
+      humanPlayer.name = newName;
+    }
 
     notifyListeners();
   }

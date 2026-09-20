@@ -1,8 +1,27 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
-enum PlayerColor { red, green, blue, yellow }
-
 enum PlayerType { human, bot }
+
+enum PlayerColor {
+  red,
+  green,
+  blue,
+  yellow;
+
+  String get label => switch (this) {
+    PlayerColor.red => 'Red',
+    PlayerColor.green => 'Green',
+    PlayerColor.blue => 'Blue',
+    PlayerColor.yellow => 'Yellow',
+  };
+
+  static PlayerColor random({PlayerColor? exclude}) {
+    final options = values.where((c) => c != exclude).toList();
+    return options[Random().nextInt(options.length)];
+  }
+}
 
 // The sealed keyword makes it unextendable on other files.
 sealed class Player {
@@ -17,6 +36,13 @@ sealed class Player {
     this.hasMoved = false,
     this.isOut = false,
   });
+
+  String get displayColor => switch (color) {
+    PlayerColor.red => "Red",
+    PlayerColor.green => "Green",
+    PlayerColor.blue => "Blue",
+    PlayerColor.yellow => "Yellow",
+  };
 
   String get displayName;
   IconData get displayIcon;
