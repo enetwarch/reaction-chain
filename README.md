@@ -1,11 +1,3 @@
-<!--
-  This is your project's front page. Replace every placeholder below.
-  It is the first thing your instructor and any future employer will read, and
-  the live link in it is how your project gets opened for grading.
-
-  New here? Read START-HERE.md first. Delete this comment when you are done.
--->
-
 # Reaction Chain
 
 > For board game enthusiasts looking for a better [Chain Reaction](https://play.google.com/store/apps/details?id=com.BuddyMattEnt.ChainReaction&hl=en) experience. 
@@ -13,25 +5,45 @@
 - **Live demo:** [enetwarch.github.io/reaction-chain/](https://enetwarch.github.io/reaction-chain/)
 - **Demo video:** `docs/demo.mp4` (link it here once it exists)
 - **Course:** Applications Development and Emerging Technologies (6ADET), Holy Angel University
-- **Author:** Enetwarch (Hugo Molina)
+- **Author:** Enetwarch
+
+## Project structure
+
+```yaml
+reaction-chain/
+├── docs/ # proposal, mockups, weekly reports, screenshots
+├── lib/ # app source code
+│   ├── controllers/ # state and logic (MVC controller)
+│   ├── data/ # plain data classes (MVC model)
+│   ├── screens/ # full-page views (MVC view)
+│   ├── theme/ # design tokens, shared styling
+│   ├── widgets/ # reusable multi-widget components
+│   └── main.dart # app entry point
+├── web/ # web platform target
+├── AI-USAGE.md # AI usage log
+├── README.md # this file
+└── pubspec.yaml # dependencies
+```
 
 ## Screenshots
 
-```markdown
-| Home | Detail | Add |
+| Home | Local Lobby | Game |
 | --- | --- | --- |
-| ![Home](docs/assets/screen-home.png) | ![Detail](docs/assets/screen-detail.png) | ![Add](docs/assets/screen-add.png) |
-```
+| ![Home](docs/assets/home-screen.png) | ![Local Lobby](docs/assets/local-lobby-screen.png) | ![Game](docs/assets/game-screen.png) |
 
 ## What it does
 
-Three to five bullets. What can a user actually do?
-
 - The user can create a custom lobby, with a minimum of 2 and maximum of 4 players.
 - The user can play a full local match of Chain Reaction, placing orbs and triggering chain reactions until only one player remains.
-- The user can adjust game settings such as sound, music, vibration, and move confirmation.
-- The user can resign from an ongoing match if they no longer wish to continue.
-- The user can undo a move or pause the game mid-match.
+- The user can adjust game settings such as sound, music, vibration, and move confirmation. (WIP)
+- The user can resign from an ongoing match if they no longer wish to continue. (WIP)
+- The user can undo a move or pause the game mid-match. (WIP)
+
+## How to use it
+
+1. **Home screen.** Tap **Play** to start a new game. The info button links to the official Chain Reaction rules, settings opens app preferences, and the source code button links to this repository.
+2. **Local lobby.** Add 2 to 4 players. Tap a player card to edit their name or color; use the drag handle to reorder players. Once everyone is set, start the match.
+3. **Game screen.** Players take turns placing orbs on the board. When a cell overloads, it triggers a chain reaction into neighboring cells. The last player with orbs remaining wins.
 
 ## Built with
 
@@ -45,11 +57,12 @@ Three to five bullets. What can a user actually do?
 ## Running it yourself
 
 ```bash
-flutter pub get
-flutter run -d web-server --web-port 8080
+git clone https://github.com/enetwarch/reaction-chain # Skip this line if the repository is already cloned. 
+flutter pub get # Downloads the necessary Flutter packages for this project.
+flutter run -d web-server --web-port 8080 # Run in local browser.
 ```
 
-Then open http://localhost:8080. Requires Flutter version `3.41.9`.
+Then open http://localhost:8080. Requires Dart version `3.12.2`, Flutter version `3.41.9`. If this is ran successfully, you should see the home screen with a Play button in the center and info, settings, and source code buttons along the bottom.
 
 ## Privacy and secrets
 
@@ -69,7 +82,7 @@ Then open http://localhost:8080. Requires Flutter version `3.41.9`.
 
 ## Status and what is next
 
-The home page and local lobby page are basically complete, with some refinements for later. The game page has its functionality down, but lacking in animations, which is the next focus for development.
+To summarize, the home page and local lobby page are basically complete, with some refinements for later. The game page has its functionality down, but lacking in animations, which is the next focus in development.
 
 ## Credits
 
@@ -79,7 +92,9 @@ The home page and local lobby page are basically complete, with some refinements
 
 ## AI use
 
-I use AI tools to help me self-study Flutter classes and packages I will use in this project. I basically use it as a glorified search engine and personalized teacher.
+![Built with AI assistance](https://img.shields.io/badge/built%20with-AI%20assistance-0b5fff)
+
+I mostly used AI tools to help me self-study Flutter classes and packages I will use in this project. However, this project is still built with AI assistance. See [`AI-USAGE.md`](./AI-USAGE.md)
 
 ## Licence
 
