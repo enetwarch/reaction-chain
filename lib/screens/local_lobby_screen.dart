@@ -24,18 +24,23 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
       context: context,
       builder: (context) => ListenableBuilder(
         listenable: playerListController,
-        builder: (context, _) => PlayerCardDialog(
-          player: playerListController.players[index],
-          onDelete: () {
-            playerListController.removePlayer(index);
-            Navigator.of(context).pop();
-          },
-          onClose: () => Navigator.of(context).pop(),
-          onColorChange: (newColor) =>
-              playerListController.changePlayerColor(index, newColor),
-          onNameChange: (newName) =>
-              playerListController.changePlayerName(index, newName),
-        ),
+        builder: (context, _) {
+          if (index >= playerListController.players.length) {
+            return const SizedBox.shrink();
+          }
+          return PlayerCardDialog(
+            player: playerListController.players[index],
+            onDelete: () {
+              Navigator.of(context).pop();
+              playerListController.removePlayer(index);
+            },
+            onClose: () => Navigator.of(context).pop(),
+            onColorChange: (newColor) =>
+                playerListController.changePlayerColor(index, newColor),
+            onNameChange: (newName) =>
+                playerListController.changePlayerName(index, newName),
+          );
+        },
       ),
     );
   }
