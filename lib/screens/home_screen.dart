@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reaction_chain/screens/local_lobby_screen.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
+import 'package:reaction_chain/components/icon_button.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -62,17 +63,10 @@ class _PlayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.play_arrow_rounded, size: AppDimensions.iconXl),
+    return AppIconButton(
+      iconData: Icons.play_arrow_rounded,
       onPressed: onPlay,
-      style: Theme.of(context).iconButtonTheme.style?.copyWith(
-        fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonXl),
-        shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
-          ),
-        ),
-      ),
+      size: .xl,
     );
   }
 }
@@ -94,26 +88,20 @@ class _ActionButtonRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: AppDimensions.spacingLg,
       children: [
-        IconButton(
-          icon: Icon(Icons.info_rounded, size: AppDimensions.iconLg),
+        AppIconButton(
+          iconData: Icons.info_rounded,
           onPressed: () {},
-          style: Theme.of(context).iconButtonTheme.style?.copyWith(
-            fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonLg),
-          ),
+          size: .large,
         ),
-        IconButton(
-          icon: Icon(Icons.settings_rounded, size: AppDimensions.iconLg),
+        AppIconButton(
+          iconData: Icons.settings_rounded,
           onPressed: () {},
-          style: Theme.of(context).iconButtonTheme.style?.copyWith(
-            fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonLg),
-          ),
+          size: .large,
         ),
-        IconButton(
-          icon: Icon(Icons.code_rounded, size: AppDimensions.iconLg),
+        AppIconButton(
+          iconData: Icons.code_rounded,
           onPressed: () {},
-          style: Theme.of(context).iconButtonTheme.style?.copyWith(
-            fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonLg),
-          ),
+          size: .large,
         ),
       ],
     );

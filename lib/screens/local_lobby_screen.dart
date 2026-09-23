@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:reaction_chain/controllers/player_list_controller.dart';
 import 'package:reaction_chain/data/player.dart';
@@ -7,6 +5,7 @@ import 'package:reaction_chain/screens/game_screen.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
 import 'package:reaction_chain/theme/player_colors.dart';
 import 'package:reaction_chain/widgets/player_card_dialog.dart';
+import 'package:reaction_chain/components/icon_button.dart';
 
 class LocalLobbyScreen extends StatefulWidget {
   const LocalLobbyScreen({super.key});
@@ -63,8 +62,10 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
                       Positioned(
                         top: AppDimensions.spacingLg,
                         left: AppDimensions.spacingLg,
-                        child: _BackButton(
+                        child: AppIconButton(
+                          iconData: Icons.arrow_back_rounded,
                           onPressed: () => Navigator.pop(context),
+                          size: .small,
                         ),
                       ),
                       Column(
@@ -79,34 +80,10 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
                             style: Theme.of(context).textTheme.displayLarge,
                           ),
                           Expanded(
-                            child: ReorderableListView(
-                              buildDefaultDragHandles: false,
+                            child: _PlayerList(
+                              players: playerListController.players,
                               onReorder: playerListController.reorderPlayer,
-                              proxyDecorator: (child, index, animation) {
-                                return Material(
-                                  color: Colors.transparent,
-                                  borderRadius: BorderRadius.circular(
-                                    AppDimensions.radiusSm,
-                                  ),
-                                  clipBehavior: Clip.antiAlias,
-                                  child: child,
-                                );
-                              },
-                              children: [
-                                for (final (index, player)
-                                    in playerListController.players.indexed)
-                                  Padding(
-                                    key: ValueKey(player),
-                                    padding: EdgeInsets.only(
-                                      bottom: AppDimensions.spacingMd,
-                                    ),
-                                    child: _PlayerListTile(
-                                      player: player,
-                                      index: index,
-                                      onTap: () => managePlayer(index),
-                                    ),
-                                  ),
-                              ],
+                              onListTileTap: (index) => managePlayer(index),
                             ),
                           ),
                           _ActionButtonRow(
@@ -139,29 +116,42 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
   }
 }
 
-class _BackButton extends StatelessWidget {
-  final VoidCallback onPressed;
+class _PlayerList extends StatelessWidget {
+  final List<Player> players;
+  final Function(int, int) onReorder;
+  final Function(int) onListTileTap;
 
-  const _BackButton({required this.onPressed});
+  const _PlayerList({
+    required this.players,
+    required this.onReorder,
+    required this.onListTileTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: Transform.translate(
-        // Rotate will off-center the icon, this will center it back.
-        offset: const Offset(2, 1),
-        child: Transform.rotate(
-          angle: math.pi,
-          child: const Icon(
-            Icons.play_arrow_rounded,
-            size: AppDimensions.iconSm,
+    return ReorderableListView(
+      buildDefaultDragHandles: false,
+      onReorder: onReorder,
+      proxyDecorator: (child, index, animation) {
+        return Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+          clipBehavior: Clip.antiAlias,
+          child: child,
+        );
+      },
+      children: [
+        for (final (index, player) in players.indexed)
+          Padding(
+            key: ValueKey(player),
+            padding: EdgeInsets.only(bottom: AppDimensions.spacingMd),
+            child: _PlayerListTile(
+              player: player,
+              index: index,
+              onTap: () => onListTileTap(index),
+            ),
           ),
-        ),
-      ),
-      onPressed: onPressed,
-      style: Theme.of(context).iconButtonTheme.style?.copyWith(
-        fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonSm),
-      ),
+      ],
     );
   }
 }
@@ -224,29 +214,20 @@ class _ActionButtonRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: AppDimensions.spacingLg,
       children: [
-        IconButton(
-          icon: const Icon(Icons.person_rounded, size: AppDimensions.iconLg),
+        AppIconButton(
+          iconData: Icons.person_rounded,
           onPressed: onPerson,
-          style: Theme.of(context).iconButtonTheme.style?.copyWith(
-            fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonLg),
-          ),
+          size: .large,
         ),
-        IconButton(
-          icon: const Icon(
-            Icons.play_arrow_rounded,
-            size: AppDimensions.iconLg,
-          ),
+        AppIconButton(
+          iconData: Icons.play_arrow_rounded,
           onPressed: onPlay,
-          style: Theme.of(context).iconButtonTheme.style?.copyWith(
-            fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonLg),
-          ),
+          size: .large,
         ),
-        IconButton(
-          icon: const Icon(Icons.smart_toy_rounded, size: AppDimensions.iconLg),
+        AppIconButton(
+          iconData: Icons.smart_toy_rounded,
           onPressed: onBot,
-          style: Theme.of(context).iconButtonTheme.style?.copyWith(
-            fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonLg),
-          ),
+          size: .large,
         ),
       ],
     );

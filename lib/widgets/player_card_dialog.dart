@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:reaction_chain/data/player.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
 import 'package:reaction_chain/theme/player_colors.dart';
+import 'package:reaction_chain/components/icon_button.dart';
 
 class PlayerCardDialog extends StatelessWidget {
   final Player player;
@@ -41,7 +42,7 @@ class PlayerCardDialog extends StatelessWidget {
               Positioned(
                 top: AppDimensions.spacingLg,
                 left: AppDimensions.spacingLg,
-                child: _SmallIconButton(
+                child: AppIconButton(
                   iconData: Icons.delete_rounded,
                   onPressed: onDelete,
                 ),
@@ -49,7 +50,7 @@ class PlayerCardDialog extends StatelessWidget {
               Positioned(
                 top: AppDimensions.spacingLg,
                 right: AppDimensions.spacingLg,
-                child: _SmallIconButton(
+                child: AppIconButton(
                   iconData: Icons.close_rounded,
                   onPressed: onClose,
                 ),
@@ -168,7 +169,7 @@ class _NameRowState extends State<_NameRow> {
           ),
         ),
         const SizedBox(width: AppDimensions.spacingMd),
-        _SmallIconButton(
+        AppIconButton(
           iconData: _isEditing ? Icons.check_rounded : Icons.edit_rounded,
           onPressed: () {
             if (_isEditing) {
@@ -269,33 +270,13 @@ class _ColorEditRow extends StatelessWidget {
           ),
         ),
         const SizedBox(width: AppDimensions.spacingMd),
-        _SmallIconButton(
+        AppIconButton(
           iconData: Icons.shuffle_rounded,
           onPressed: () =>
               onColorChange(PlayerColor.random(exclude: selectedColor)),
+          size: .small,
         ),
       ],
-    );
-  }
-}
-
-class _SmallIconButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final IconData iconData;
-
-  const _SmallIconButton({required this.onPressed, required this.iconData});
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: onPressed,
-      icon: Icon(iconData, size: AppDimensions.iconSm),
-      style: Theme.of(context).iconButtonTheme.style?.copyWith(
-        fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonSm),
-        backgroundColor: WidgetStatePropertyAll(
-          Theme.of(context).colorScheme.surfaceContainerLow,
-        ),
-      ),
     );
   }
 }

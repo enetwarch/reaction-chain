@@ -4,6 +4,7 @@ import 'package:reaction_chain/data/board.dart';
 import 'package:reaction_chain/data/player.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
 import 'package:reaction_chain/theme/player_colors.dart';
+import 'package:reaction_chain/components/icon_button.dart';
 
 class GameScreen extends StatefulWidget {
   final List<Player> players;
@@ -114,31 +115,20 @@ class _TopMenuBar extends StatelessWidget {
           Row(
             spacing: AppDimensions.spacingMd,
             children: [
-              IconButton(
-                icon: const Icon(
-                  Icons.home_rounded,
-                  size: AppDimensions.iconSm,
-                ),
+              AppIconButton(
+                iconData: Icons.home_rounded,
                 onPressed: () {},
-                style: Theme.of(context).iconButtonTheme.style?.copyWith(
-                  fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonSm),
-                  backgroundColor: WidgetStatePropertyAll(
-                    Theme.of(context).colorScheme.surfaceContainerLow,
-                  ),
-                ),
+                size: .small,
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.surfaceContainerLow,
               ),
-              IconButton(
-                icon: const Icon(
-                  Icons.settings_rounded,
-                  size: AppDimensions.iconSm,
-                ),
+              AppIconButton(
+                iconData: Icons.settings_rounded,
                 onPressed: () {},
-                style: Theme.of(context).iconButtonTheme.style?.copyWith(
-                  fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonSm),
-                  backgroundColor: WidgetStatePropertyAll(
-                    Theme.of(context).colorScheme.surfaceContainerLow,
-                  ),
-                ),
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.surfaceContainerLow,
               ),
             ],
           ),
@@ -334,44 +324,29 @@ class _BottomMenuBar extends StatelessWidget {
           Row(
             spacing: AppDimensions.spacingMd,
             children: [
-              IconButton(
-                icon: const Icon(
-                  Icons.flag_rounded,
-                  size: AppDimensions.iconSm,
-                ),
+              AppIconButton(
+                iconData: Icons.flag_rounded,
                 onPressed: () {},
-                style: Theme.of(context).iconButtonTheme.style?.copyWith(
-                  fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonSm),
-                  backgroundColor: WidgetStatePropertyAll(
-                    Theme.of(context).colorScheme.surfaceContainerLow,
-                  ),
-                ),
+                size: .small,
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.surfaceContainerLow,
               ),
-              IconButton(
-                icon: const Icon(
-                  Icons.undo_rounded,
-                  size: AppDimensions.iconSm,
-                ),
+              AppIconButton(
+                iconData: Icons.undo_rounded,
                 onPressed: () {},
-                style: Theme.of(context).iconButtonTheme.style?.copyWith(
-                  fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonSm),
-                  backgroundColor: WidgetStatePropertyAll(
-                    Theme.of(context).colorScheme.surfaceContainerLow,
-                  ),
-                ),
+                size: .small,
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.surfaceContainerLow,
               ),
-              IconButton(
-                icon: const Icon(
-                  Icons.pause_rounded,
-                  size: AppDimensions.iconSm,
-                ),
+              AppIconButton(
+                iconData: Icons.pause_rounded,
                 onPressed: () {},
-                style: Theme.of(context).iconButtonTheme.style?.copyWith(
-                  fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonSm),
-                  backgroundColor: WidgetStatePropertyAll(
-                    Theme.of(context).colorScheme.surfaceContainerLow,
-                  ),
-                ),
+                size: .small,
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.surfaceContainerLow,
               ),
             ],
           ),
