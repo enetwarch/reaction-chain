@@ -42,9 +42,13 @@ class PlayerCardDialog extends StatelessWidget {
               Positioned(
                 top: AppDimensions.spacingLg,
                 left: AppDimensions.spacingLg,
-                child: AppIconButton(
+                child: AppArmedIconButton(
                   iconData: Icons.delete_rounded,
-                  onPressed: onDelete,
+                  onConfirm: onDelete,
+                  size: .small,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.surfaceContainerLow,
                 ),
               ),
               Positioned(
@@ -53,6 +57,10 @@ class PlayerCardDialog extends StatelessWidget {
                 child: AppIconButton(
                   iconData: Icons.close_rounded,
                   onPressed: onClose,
+                  size: .small,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.surfaceContainerLow,
                 ),
               ),
               Padding(
@@ -169,15 +177,13 @@ class _NameRowState extends State<_NameRow> {
           ),
         ),
         const SizedBox(width: AppDimensions.spacingMd),
-        AppIconButton(
+        AppArmedIconButton(
           iconData: _isEditing ? Icons.check_rounded : Icons.edit_rounded,
-          onPressed: () {
-            if (_isEditing) {
-              _submit();
-            } else {
-              setState(() => _isEditing = true);
-            }
-          },
+          onArm: () => setState(() => _isEditing = true),
+          onConfirm: () => _submit(),
+          armDuration: null,
+          backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
+          // iconColor is default (foreground)
         ),
       ],
     );
@@ -275,6 +281,7 @@ class _ColorEditRow extends StatelessWidget {
           onPressed: () =>
               onColorChange(PlayerColor.random(exclude: selectedColor)),
           size: .small,
+          backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
         ),
       ],
     );

@@ -28,8 +28,8 @@ class AppTheme {
       iconButtonTheme: IconButtonThemeData(
         style: IconButton.styleFrom(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          backgroundColor: const Color(0xFF1A1F25),
-          foregroundColor: const Color(0xFFE6E6E6),
+          backgroundColor: const Color(0xFF1A1F25), // surface
+          foregroundColor: const Color(0xFFE6E6E6), // foreground
           padding: const EdgeInsets.all(0),
         ),
       ),
