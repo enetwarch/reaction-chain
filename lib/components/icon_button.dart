@@ -82,6 +82,74 @@ class AppIconButton extends StatelessWidget {
   }
 }
 
+// This button switches between active and inactive state whenever it is pressed.
+class AppToggleIconButton extends StatelessWidget {
+  final IconData iconData;
+  final IconData? offIconData;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+  final AppIconButtonSize size;
+  final Duration transitionDuration;
+  final Color? backgroundColor;
+  final Color? iconColor;
+  final Color? activeBackgroundColor;
+  final Color? activeIconColor;
+
+  const AppToggleIconButton({
+    super.key,
+    required this.iconData,
+    this.offIconData,
+    required this.value,
+    required this.onChanged,
+    this.size = AppIconButtonSize.small,
+    this.transitionDuration = const Duration(milliseconds: 200),
+    this.backgroundColor,
+    this.iconColor,
+    this.activeBackgroundColor,
+    this.activeIconColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final inactiveBg = backgroundColor ?? theme.colorScheme.surfaceContainerLow;
+    final inactiveFg = iconColor ?? theme.colorScheme.onSurface;
+
+    // Active colors invert inactive defaults unless explicitly provided
+    final activeBg = activeBackgroundColor ?? inactiveFg;
+    final activeFg = activeIconColor ?? inactiveBg;
+
+    final currentIcon = (value || offIconData == null)
+        ? iconData
+        : offIconData!;
+
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: 0.0, end: value ? 1.0 : 0.0),
+      duration: transitionDuration,
+      curve: Curves.easeInOut,
+      builder: (context, t, child) {
+        final currentBg = Color.lerp(inactiveBg, activeBg, t);
+        final currentFg = Color.lerp(inactiveFg, activeFg, t);
+
+        return AnimatedSwitcher(
+          duration: transitionDuration,
+          transitionBuilder: (child, animation) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+          child: AppIconButton(
+            key: ValueKey<IconData>(currentIcon),
+            iconData: currentIcon,
+            onPressed: () => onChanged(!value),
+            size: size,
+            backgroundColor: currentBg,
+            iconColor: currentFg,
+          ),
+        );
+      },
+    );
+  }
+}
+
 // This icon button highlights itself first and then when pressed again,
 // it will finally do its intended onPress function (onConfirm).
 class AppArmedIconButton extends StatefulWidget {
@@ -138,7 +206,6 @@ class _AppArmedIconButtonState extends State<AppArmedIconButton> {
     }
   }
 
-  @override
   @override
   Widget build(BuildContext context) {
     final background =

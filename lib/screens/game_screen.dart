@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:reaction_chain/controllers/game_controller.dart';
 import 'package:reaction_chain/data/board.dart';
 import 'package:reaction_chain/data/player.dart';
+import 'package:reaction_chain/data/settings.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
 import 'package:reaction_chain/theme/player_colors.dart';
 import 'package:reaction_chain/components/icon_button.dart';
+import 'package:reaction_chain/widgets/settings_dialog.dart';
 
 class GameScreen extends StatefulWidget {
   final List<Player> players;
+  final Settings settings;
 
-  const GameScreen({super.key, required this.players});
+  const GameScreen({super.key, required this.players, required this.settings});
 
   @override
   State<GameScreen> createState() => _GameScreenState();
@@ -57,7 +60,20 @@ class _GameScreenState extends State<GameScreen> {
                       Column(
                         spacing: AppDimensions.spacingMd,
                         children: [
-                          _TopMenuBar(turnPlayer: gameController.currentPlayer),
+                          _TopMenuBar(
+                            turnPlayer: gameController.currentPlayer,
+                            onHome: () {},
+                            onSettings: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => SettingsDialog(
+                                  settings: widget.settings,
+                                  onSettingsChange: () =>
+                                      widget.settings.save(),
+                                ),
+                              );
+                            },
+                          ),
                           _PlayerScores(players: gameController.players),
                         ],
                       ),
@@ -80,8 +96,14 @@ class _GameScreenState extends State<GameScreen> {
 
 class _TopMenuBar extends StatelessWidget {
   final Player turnPlayer;
+  final VoidCallback onHome;
+  final VoidCallback onSettings;
 
-  const _TopMenuBar({required this.turnPlayer});
+  const _TopMenuBar({
+    required this.turnPlayer,
+    required this.onHome,
+    required this.onSettings,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +139,7 @@ class _TopMenuBar extends StatelessWidget {
             children: [
               AppIconButton(
                 iconData: Icons.home_rounded,
-                onPressed: () {},
+                onPressed: onHome,
                 size: .small,
                 backgroundColor: Theme.of(
                   context,
@@ -125,7 +147,7 @@ class _TopMenuBar extends StatelessWidget {
               ),
               AppIconButton(
                 iconData: Icons.settings_rounded,
-                onPressed: () {},
+                onPressed: onSettings,
                 backgroundColor: Theme.of(
                   context,
                 ).colorScheme.surfaceContainerLow,

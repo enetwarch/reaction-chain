@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:reaction_chain/screens/local_lobby_screen.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
 import 'package:reaction_chain/components/icon_button.dart';
+import 'package:reaction_chain/widgets/settings_dialog.dart';
+import 'package:reaction_chain/data/settings.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  final Settings settings;
+
+  const HomeScreen({super.key, required this.settings});
 
   @override
   Widget build(BuildContext context) {
@@ -33,17 +36,20 @@ class HomeScreen extends StatelessWidget {
                   ),
                   _PlayButton(
                     onPlay: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LocalLobbyScreen(),
-                        ),
-                      );
+                      Navigator.pushNamed(context, '/local-lobby');
                     },
                   ),
                   _ActionButtonRow(
                     onInfo: () {},
-                    onSettings: () {},
+                    onSettings: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => SettingsDialog(
+                          settings: settings,
+                          onSettingsChange: () => settings.save(),
+                        ),
+                      );
+                    },
                     onCode: () {},
                   ),
                 ],
@@ -90,17 +96,17 @@ class _ActionButtonRow extends StatelessWidget {
       children: [
         AppIconButton(
           iconData: Icons.info_rounded,
-          onPressed: () {},
+          onPressed: onInfo,
           size: .large,
         ),
         AppIconButton(
           iconData: Icons.settings_rounded,
-          onPressed: () {},
+          onPressed: onSettings,
           size: .large,
         ),
         AppIconButton(
           iconData: Icons.code_rounded,
-          onPressed: () {},
+          onPressed: onCode,
           size: .large,
         ),
       ],
