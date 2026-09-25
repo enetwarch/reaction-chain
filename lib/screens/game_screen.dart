@@ -48,45 +48,64 @@ class _GameScreenState extends State<GameScreen> {
       builder: (context, child) {
         return Scaffold(
           body: SafeArea(
-            child: Container(
-              padding: EdgeInsets.all(AppDimensions.spacingXxl),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxWidth: AppDimensions.maxWidth,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        spacing: AppDimensions.spacingMd,
-                        children: [
-                          _TopMenuBar(
-                            turnPlayer: gameController.currentPlayer,
-                            onHome: () {},
-                            onSettings: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) => SettingsDialog(
-                                  settings: widget.settings,
-                                  onSettingsChange: () =>
-                                      widget.settings.save(),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: AppDimensions.maxWidth,
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(AppDimensions.spacingXxl),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Top Section
+                            Column(
+                              spacing: AppDimensions.spacingMd,
+                              children: [
+                                _TopMenuBar(
+                                  turnPlayer: gameController.currentPlayer,
+                                  onHome: () {},
+                                  onSettings: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => SettingsDialog(
+                                        settings: widget.settings,
+                                        onSettingsChange: () =>
+                                            widget.settings.save(),
+                                      ),
+                                    );
+                                  },
                                 ),
-                              );
-                            },
-                          ),
-                          _PlayerScores(players: gameController.players),
-                        ],
+                                _PlayerScores(players: gameController.players),
+                              ],
+                            ),
+
+                            // Middle Board
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: AppDimensions.spacingLg,
+                              ),
+                              child: BoardWidget(
+                                board: gameController.board,
+                                onCellTap: onCellTap,
+                              ),
+                            ),
+
+                            // Bottom Section
+                            _BottomMenuBar(
+                              turnNumber: gameController.turnNumber,
+                            ),
+                          ],
+                        ),
                       ),
-                      BoardWidget(
-                        board: gameController.board,
-                        onCellTap: onCellTap,
-                      ),
-                      _BottomMenuBar(turnNumber: gameController.turnNumber),
-                    ],
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ),
         );

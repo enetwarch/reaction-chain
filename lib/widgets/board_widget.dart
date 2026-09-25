@@ -11,39 +11,45 @@ class BoardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: AppDimensions.cell * board.cols + AppDimensions.borderSm * 2,
-      height: AppDimensions.cell * board.rows + AppDimensions.borderSm * 2,
-      child: ClipRRect(
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Theme.of(context).colorScheme.surfaceContainerLow,
+          width: AppDimensions.borderSm,
+        ),
         borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Theme.of(context).colorScheme.surfaceContainerLow,
-              width: AppDimensions.borderSm,
-            ),
-            borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(
+          (AppDimensions.radiusSm - AppDimensions.borderSm).clamp(
+            0,
+            double.infinity,
           ),
-          child: GridView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: board.cols,
-              childAspectRatio: 1,
-              crossAxisSpacing: AppDimensions.borderSm,
-              mainAxisSpacing: AppDimensions.borderSm,
-            ),
-            itemCount: board.rows * board.cols,
-            itemBuilder: (context, index) {
-              final coordinates = (
-                row: index ~/ board.cols,
-                col: index % board.cols,
-              );
-              return _CellWidget(
-                cell: board.cell(coordinates)!,
-                onTap: () => onCellTap(coordinates),
-              );
-            },
-          ),
+        ),
+
+        // Forcing this to be a grid was really hard, so I stuck to a
+        // Column and Row combination instead.
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          spacing: AppDimensions.borderSm,
+          children: [
+            for (int row = 0; row < board.rows; row++)
+              Row(
+                spacing: AppDimensions.borderSm,
+                children: [
+                  for (int col = 0; col < board.cols; col++)
+                    Expanded(
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: _CellWidget(
+                          cell: board.cell((row: row, col: col))!,
+                          onTap: () => onCellTap((row: row, col: col)),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+          ],
         ),
       ),
     );
