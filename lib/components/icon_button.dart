@@ -4,7 +4,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
 
-enum AppIconButtonSize { small, large, xl }
+enum AppIconButtonSize { small, medium, large, xl }
 
 class AppIconButton extends StatelessWidget {
   final IconData iconData;
@@ -28,12 +28,18 @@ class AppIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    if (size == AppIconButtonSize.small) {
+    if (size == AppIconButtonSize.small || size == AppIconButtonSize.medium) {
+      final iconSize = size == AppIconButtonSize.small
+          ? AppDimensions.iconSm
+          : AppDimensions.iconMd;
+      final buttonSize = size == AppIconButtonSize.small
+          ? AppDimensions.iconButtonSm
+          : AppDimensions.iconButtonMd;
       return IconButton(
         onPressed: onPressed,
-        icon: Icon(iconData, size: AppDimensions.iconSm, color: iconColor),
+        icon: Icon(iconData, size: iconSize, color: iconColor),
         style: theme.iconButtonTheme.style?.copyWith(
-          fixedSize: WidgetStatePropertyAll(AppDimensions.iconButtonSm),
+          fixedSize: WidgetStatePropertyAll(buttonSize),
           backgroundColor: backgroundColor != null
               ? WidgetStatePropertyAll(backgroundColor)
               : null,
@@ -53,6 +59,7 @@ class AppIconButton extends StatelessWidget {
         AppDimensions.radiusMd,
       ),
       AppIconButtonSize.small => throw StateError('handled above'),
+      AppIconButtonSize.medium => throw StateError('handled above'),
     };
 
     return LayoutBuilder(

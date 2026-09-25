@@ -24,8 +24,9 @@ class AppDimensions {
 
   // Icon button sizes
   static const iconButtonSm = Size(48, 48);
-  static const iconButtonLg = Size(100, 100);
-  static const iconButtonXl = Size(160, 160);
+  static const iconButtonMd = Size(72, 72);
+  static const iconButtonLg = Size(96, 96);
+  static const iconButtonXl = Size(144, 144);
 
   // Icon button minimum sizes
   static const iconButtonLgMin = Size(72, 72);

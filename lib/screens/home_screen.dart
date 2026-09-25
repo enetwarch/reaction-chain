@@ -94,20 +94,26 @@ class _ActionButtonRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: AppDimensions.spacingLg,
       children: [
-        AppIconButton(
-          iconData: Icons.info_rounded,
-          onPressed: onInfo,
-          size: .large,
+        Flexible(
+          child: AppIconButton(
+            iconData: Icons.info_rounded,
+            onPressed: onInfo,
+            size: .large,
+          ),
         ),
-        AppIconButton(
-          iconData: Icons.settings_rounded,
-          onPressed: onSettings,
-          size: .large,
+        Flexible(
+          child: AppIconButton(
+            iconData: Icons.settings_rounded,
+            onPressed: onSettings,
+            size: .large,
+          ),
         ),
-        AppIconButton(
-          iconData: Icons.code_rounded,
-          onPressed: onCode,
-          size: .large,
+        Flexible(
+          child: AppIconButton(
+            iconData: Icons.code_rounded,
+            onPressed: onCode,
+            size: .large,
+          ),
         ),
       ],
     );

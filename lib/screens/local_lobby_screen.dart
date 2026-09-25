@@ -67,8 +67,8 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
                       child: Stack(
                         children: [
                           Positioned(
-                            top: AppDimensions.spacingLg,
-                            left: AppDimensions.spacingLg,
+                            top: 0,
+                            left: 0,
                             child: AppIconButton(
                               iconData: Icons.arrow_back_rounded,
                               onPressed: () => Navigator.pop(context),
@@ -104,6 +104,7 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
                                 },
                                 size: .large,
                               ),
+                              SizedBox(height: AppDimensions.spacingLg),
                             ],
                           ),
                         ],
@@ -128,6 +129,7 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
                   bottom: AppDimensions.spacingLg,
                   right: AppDimensions.spacingLg,
                   child: SpeedDialMenu(
+                    isOpen: _isDialOpen,
                     onAddHuman: () {
                       playerListController.addPlayer(PlayerType.human);
                     },
@@ -225,29 +227,19 @@ class _PlayerListTile extends StatelessWidget {
   }
 }
 
-class SpeedDialMenu extends StatefulWidget {
+class SpeedDialMenu extends StatelessWidget {
+  final bool isOpen;
   final VoidCallback onAddHuman;
   final VoidCallback onAddBot;
-  final ValueChanged<bool>? onToggle;
+  final ValueChanged<bool> onToggle;
 
   const SpeedDialMenu({
     super.key,
+    required this.isOpen,
     required this.onAddHuman,
     required this.onAddBot,
-    this.onToggle,
+    required this.onToggle,
   });
-
-  @override
-  State<SpeedDialMenu> createState() => _SpeedDialMenuState();
-}
-
-class _SpeedDialMenuState extends State<SpeedDialMenu> {
-  bool _isOpen = false;
-
-  void _toggleMenu() {
-    setState(() => _isOpen = !_isOpen);
-    widget.onToggle?.call(_isOpen);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -258,26 +250,26 @@ class _SpeedDialMenuState extends State<SpeedDialMenu> {
       children: [
         _SpeedDialItem(
           index: 0,
-          isOpen: _isOpen,
+          isOpen: isOpen,
           iconData: Icons.smart_toy_rounded,
           onPressed: () {
-            _toggleMenu();
-            widget.onAddBot();
+            onToggle(false);
+            onAddBot();
           },
         ),
         _SpeedDialItem(
           index: 1,
-          isOpen: _isOpen,
+          isOpen: isOpen,
           iconData: Icons.person_rounded,
           onPressed: () {
-            _toggleMenu();
-            widget.onAddHuman();
+            onToggle(false);
+            onAddHuman();
           },
         ),
         AppIconButton(
-          iconData: _isOpen ? Icons.close_rounded : Icons.add_rounded,
-          onPressed: _toggleMenu,
-          size: AppIconButtonSize.large,
+          iconData: isOpen ? Icons.close_rounded : Icons.add_rounded,
+          onPressed: () => onToggle(!isOpen),
+          size: .large,
         ),
       ],
     );
