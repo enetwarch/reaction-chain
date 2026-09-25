@@ -3,6 +3,7 @@ import 'package:reaction_chain/controllers/game_controller.dart';
 import 'package:reaction_chain/data/board.dart';
 import 'package:reaction_chain/data/player.dart';
 import 'package:reaction_chain/data/settings.dart';
+import 'package:reaction_chain/providers/local_storage_provider.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
 import 'package:reaction_chain/theme/player_colors.dart';
 import 'package:reaction_chain/components/icon_button.dart';
@@ -75,7 +76,9 @@ class _GameScreenState extends State<GameScreen> {
                                       builder: (context) => SettingsDialog(
                                         settings: widget.settings,
                                         onSettingsChange: () =>
-                                            widget.settings.save(),
+                                            LocalStorageProvider.of(
+                                              context,
+                                            ).saveSettings(widget.settings),
                                       ),
                                     );
                                   },

@@ -1,7 +1,14 @@
 import 'package:reaction_chain/data/player.dart';
 
 typedef Coordinates = ({int row, int col});
-typedef Move = ({Player player, Coordinates coordinates});
+
+extension CoordinatesExtension on Coordinates {
+  Map<String, dynamic> toJson() => {'row': row, 'col': col};
+
+  static Coordinates fromJson(Map<String, dynamic> json) {
+    return (row: json['row'] as int, col: json['col'] as int);
+  }
+}
 
 class Board {
   int rows;
@@ -17,6 +24,38 @@ class Board {
           );
         });
       });
+
+  Board.raw({required this.rows, required this.cols, required this.cells});
+
+  Map<String, dynamic> toJson() => {
+    'rows': rows,
+    'cols': cols,
+    'cells': cells
+        .map((row) => row.map((cell) => cell.toJson()).toList())
+        .toList(),
+  };
+
+  factory Board.fromJson(
+    Map<String, dynamic> json, {
+    required List<Player> players,
+  }) {
+    final rows = json['rows'] as int;
+    final cols = json['cols'] as int;
+    final rawCells = json['cells'] as List;
+
+    final cellsGrid = rawCells.map((row) {
+      return (row as List).map((cellJson) {
+        return Cell.fromJson(
+          cellJson as Map<String, dynamic>,
+          players: players,
+          rows: rows,
+          cols: cols,
+        );
+      }).toList();
+    }).toList();
+
+    return Board.raw(rows: rows, cols: cols, cells: cellsGrid);
+  }
 
   static int _criticalMassFor(int row, int col, int rows, int cols) {
     final isTopOrBottom = row == 0 || row == rows - 1;
@@ -71,6 +110,33 @@ class Cell {
 
   bool get isCritical => orbCount >= criticalMass;
   bool get isEmpty => orbCount == 0;
+
+  Map<String, dynamic> toJson() => {
+    'occupantColor': occupant?.color.name,
+    'orbCount': orbCount,
+    'coordinates': coordinates.toJson(),
+  };
+
+  factory Cell.fromJson(
+    Map<String, dynamic> json, {
+    required List<Player> players,
+    required int rows,
+    required int cols,
+  }) {
+    final coords = CoordinatesExtension.fromJson(
+      json['coordinates'] as Map<String, dynamic>,
+    );
+    final occupantColorName = json['occupantColor'] as String?;
+
+    return Cell(
+      coordinates: coords,
+      orbCount: json['orbCount'] as int? ?? 0,
+      criticalMass: Board._criticalMassFor(coords.row, coords.col, rows, cols),
+      occupant: occupantColorName != null
+          ? players.firstWhere((p) => p.color.name == occupantColorName)
+          : null,
+    );
+  }
 }
 
 // For chain reactions.

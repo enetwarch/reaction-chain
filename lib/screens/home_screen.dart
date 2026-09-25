@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reaction_chain/providers/local_storage_provider.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
 import 'package:reaction_chain/components/icon_button.dart';
 import 'package:reaction_chain/widgets/settings_dialog.dart';
@@ -34,10 +35,12 @@ class HomeScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.displayLarge,
                   ),
-                  _PlayButton(
-                    onPlay: () {
+                  AppIconButton(
+                    iconData: Icons.play_arrow_rounded,
+                    onPressed: () {
                       Navigator.pushNamed(context, '/local-lobby');
                     },
+                    size: .xl,
                   ),
                   _ActionButtonRow(
                     onInfo: () {},
@@ -46,7 +49,11 @@ class HomeScreen extends StatelessWidget {
                         context: context,
                         builder: (context) => SettingsDialog(
                           settings: settings,
-                          onSettingsChange: () => settings.save(),
+                          onSettingsChange: () {
+                            LocalStorageProvider.of(
+                              context,
+                            ).saveSettings(settings);
+                          },
                         ),
                       );
                     },
@@ -58,21 +65,6 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _PlayButton extends StatelessWidget {
-  final VoidCallback onPlay;
-
-  const _PlayButton({required this.onPlay});
-
-  @override
-  Widget build(BuildContext context) {
-    return AppIconButton(
-      iconData: Icons.play_arrow_rounded,
-      onPressed: onPlay,
-      size: .xl,
     );
   }
 }

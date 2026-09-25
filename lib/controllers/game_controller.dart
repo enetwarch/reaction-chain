@@ -1,34 +1,33 @@
 import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:reaction_chain/data/board.dart';
+import 'package:reaction_chain/data/game_state.dart';
 import 'package:reaction_chain/data/player.dart';
 
 class GameController extends ChangeNotifier {
   static const defaultRows = 9;
   static const defaultCols = 6;
-  // There is a potential for other game modes.
 
-  final List<Move> _moves = [];
-  final List<Player> _players;
-  final Board board;
+  final GameState state;
 
+  // New game constructor
   GameController({required List<Player> players, Board? board})
-    : _players = players,
-      board = board ?? Board(rows: defaultRows, cols: defaultCols);
-  // A board might be initialized elsewhere.
+    : state = GameState(
+        board: board ?? Board(rows: defaultRows, cols: defaultCols),
+        players: players,
+      );
 
-  List<Move> get moves => List.unmodifiable(_moves);
-  List<Player> get players => List.unmodifiable(_players);
+  // Resume game from state constructor
+  GameController.fromState(this.state);
+
+  Board get board => state.board;
+  List<Player> get players => List.unmodifiable(state.players);
+  List<Move> get moves => List.unmodifiable(state.moves);
+  int get turnNumber => state.turnNumber;
+  Player get currentPlayer => state.currentPlayer;
+  bool get hasWinner => state.hasWinner;
 
   void refresh() => notifyListeners();
-
-  int turnNumber = 1;
-  int _turnPointer = 0;
-  Player get currentPlayer => _players[_turnPointer];
-  bool get hasWinner =>
-      _players.length > 1 &&
-      _players.where((player) => !player.isOut).length == 1;
 
   List<ExplosionEvent> placeOrb(Coordinates coordinates) {
     if (hasWinner) return [];
@@ -38,7 +37,7 @@ class GameController extends ChangeNotifier {
     cell.occupant = currentPlayer;
     cell.orbCount++;
     currentPlayer.hasMoved = true;
-    _moves.add((player: currentPlayer, coordinates: coordinates));
+    state.moves.add((player: currentPlayer, coordinates: coordinates));
 
     final events = _chainReaction(coordinates);
     _recalculatePlayerOrbCounts();
@@ -48,10 +47,10 @@ class GameController extends ChangeNotifier {
   }
 
   void _nextTurn() {
-    turnNumber++;
-    _turnPointer = (_turnPointer + 1) % players.length;
+    state.turnNumber++;
+    state.turnPointer = (state.turnPointer + 1) % players.length;
     while (currentPlayer.isOut) {
-      _turnPointer = (_turnPointer + 1) % players.length;
+      state.turnPointer = (state.turnPointer + 1) % players.length;
     }
   }
 
@@ -95,7 +94,7 @@ class GameController extends ChangeNotifier {
   }
 
   void _recalculatePlayerOrbCounts() {
-    for (final player in _players) {
+    for (final player in state.players) {
       player.orbCount = 0;
     }
 
@@ -108,7 +107,7 @@ class GameController extends ChangeNotifier {
       }
     }
 
-    for (final player in _players) {
+    for (final player in state.players) {
       if (player.hasMoved && player.orbCount <= 0) {
         player.isOut = true;
       }

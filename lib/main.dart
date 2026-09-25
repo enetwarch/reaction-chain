@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:reaction_chain/data/player.dart';
+import 'package:reaction_chain/providers/local_storage_provider.dart';
 import 'package:reaction_chain/screens/game_screen.dart';
 import 'package:reaction_chain/screens/home_screen.dart';
 import 'package:reaction_chain/screens/local_lobby_screen.dart';
+import 'package:reaction_chain/services/local_storage.dart';
 import 'package:reaction_chain/theme/app_theme.dart';
 import 'package:device_preview/device_preview.dart';
-import 'package:reaction_chain/data/settings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final preferences = await SharedPreferences.getInstance();
+  final localStorage = LocalStorage(preferences);
+
   runApp(
     DevicePreview(
       // DevicePreview draws a phone frame around your app, so it is judged at the
@@ -23,51 +30,39 @@ void main() {
       //   import 'package:flutter/foundation.dart' show kReleaseMode;
       // and set `enabled: !kReleaseMode`, which drops the frame in release builds.
       enabled: true,
-      builder: (context) => const App(),
+      builder: (context) => App(localStorage: localStorage),
     ),
   );
 }
 
-class App extends StatefulWidget {
-  const App({super.key});
+class App extends StatelessWidget {
+  final LocalStorage localStorage;
 
-  @override
-  State<App> createState() => _AppState();
-}
-
-class _AppState extends State<App> {
-  Settings? settings;
-
-  @override
-  void initState() {
-    super.initState();
-    Settings.load().then((loadedSettings) {
-      setState(() => settings = loadedSettings);
-    }); // Async function, so it will take time to finish.
-  }
+  const App({super.key, required this.localStorage});
 
   @override
   Widget build(BuildContext context) {
-    if (settings == null) {
-      return const MaterialApp(
-        home: Scaffold(body: Center(child: CircularProgressIndicator())),
-      );
-    }
+    final settings = localStorage.loadSettings();
+    // TODO: implement persistence for players and game state.
+    final savedPlayers = localStorage.loadPlayers();
+    final savedGame = localStorage.loadGameState();
 
-    return MaterialApp(
-      title: 'Reaction Chain',
-      theme: AppTheme.dark,
-      routes: {
-        '/home': (context) => HomeScreen(settings: settings!),
-        '/local-lobby': (context) => LocalLobbyScreen(),
-        '/game': (context) {
-          final players =
-              ModalRoute.of(context)!.settings.arguments as List<Player>;
-
-          return GameScreen(players: players, settings: settings!);
+    return LocalStorageProvider(
+      localStorage: localStorage,
+      child: MaterialApp(
+        title: 'Reaction Chain',
+        theme: AppTheme.dark,
+        routes: {
+          '/home': (context) => HomeScreen(settings: settings),
+          '/local-lobby': (context) => const LocalLobbyScreen(),
+          '/game': (context) {
+            final players =
+                ModalRoute.of(context)!.settings.arguments as List<Player>;
+            return GameScreen(players: players, settings: settings);
+          },
         },
-      },
-      home: HomeScreen(settings: settings!),
+        home: HomeScreen(settings: settings),
+      ),
     );
   }
 }
