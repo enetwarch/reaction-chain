@@ -22,8 +22,6 @@ class PlayerCardDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Dialog(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -33,15 +31,16 @@ class PlayerCardDialog extends StatelessWidget {
       child: ConstrainedBox(
         constraints: const BoxConstraints(minWidth: 240, maxWidth: 300),
         child: Container(
+          padding: const EdgeInsets.all(AppDimensions.spacingXl),
           decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceContainerLowest,
+            color: Theme.of(context).colorScheme.surfaceContainerLowest,
             borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
           ),
           child: Stack(
             children: [
               Positioned(
-                top: AppDimensions.spacingLg,
-                left: AppDimensions.spacingLg,
+                top: 0,
+                left: 0,
                 child: AppArmedIconButton(
                   iconData: Icons.delete_rounded,
                   onConfirm: onDelete,
@@ -52,8 +51,8 @@ class PlayerCardDialog extends StatelessWidget {
                 ),
               ),
               Positioned(
-                top: AppDimensions.spacingLg,
-                right: AppDimensions.spacingLg,
+                top: 0,
+                right: 0,
                 child: AppIconButton(
                   iconData: Icons.close_rounded,
                   onPressed: onClose,
@@ -63,39 +62,33 @@ class PlayerCardDialog extends StatelessWidget {
                   ).colorScheme.surfaceContainerLow,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppDimensions.spacingXl,
-                  vertical: AppDimensions.spacingXxl,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      player.displayIcon,
-                      size: AppDimensions.iconLg,
-                      color: theme.colorScheme.onSurface,
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    player.displayIcon,
+                    size: AppDimensions.iconLg,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  const SizedBox(height: AppDimensions.spacingSm),
+                  Text(switch (player) {
+                    HumanPlayer(name: final name) => name,
+                    BotPlayer(level: final level) => 'Level $level',
+                  }, style: Theme.of(context).textTheme.displayMedium),
+                  const SizedBox(height: AppDimensions.spacingXl),
+                  switch (player) {
+                    HumanPlayer() => _NameRow(
+                      name: player.displayName,
+                      onNameChange: onNameChange,
                     ),
-                    const SizedBox(height: AppDimensions.spacingSm),
-                    Text(switch (player) {
-                      HumanPlayer(name: final name) => name,
-                      BotPlayer(level: final level) => 'Level $level',
-                    }, style: Theme.of(context).textTheme.displayMedium),
-                    const SizedBox(height: AppDimensions.spacingXl),
-                    switch (player) {
-                      HumanPlayer() => _NameRow(
-                        name: player.displayName,
-                        onNameChange: onNameChange,
-                      ),
-                      BotPlayer() => SizedBox(), // Placeholder, not in MVP.
-                    },
-                    const SizedBox(height: AppDimensions.spacingMd),
-                    _ColorEditRow(
-                      selectedColor: player.color,
-                      onColorChange: onColorChange,
-                    ),
-                  ],
-                ),
+                    BotPlayer() => SizedBox(), // Placeholder, not in MVP.
+                  },
+                  const SizedBox(height: AppDimensions.spacingMd),
+                  _ColorEditRow(
+                    selectedColor: player.color,
+                    onColorChange: onColorChange,
+                  ),
+                ],
               ),
             ],
           ),

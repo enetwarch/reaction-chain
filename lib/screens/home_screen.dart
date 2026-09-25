@@ -16,7 +16,7 @@ class HomeScreen extends StatelessWidget {
         child: Container(
           padding: .symmetric(
             horizontal: AppDimensions.spacingXxl,
-            vertical: AppDimensions.spacingXxxl,
+            vertical: AppDimensions.spacingXxl,
           ),
           child: Center(
             child: ConstrainedBox(
