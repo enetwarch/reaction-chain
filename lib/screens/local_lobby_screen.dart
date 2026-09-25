@@ -15,6 +15,7 @@ class LocalLobbyScreen extends StatefulWidget {
 
 class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
   final PlayerListController playerListController = PlayerListController();
+  bool _isDialOpen = false;
 
   void managePlayer(int index) {
     if (playerListController.playerCount <= index) return;
@@ -51,64 +52,90 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
       builder: (context, child) {
         return Scaffold(
           body: SafeArea(
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: AppDimensions.spacingXxl,
-                vertical: AppDimensions.spacingXxl,
-              ),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxWidth: AppDimensions.maxWidth,
+            child: Stack(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppDimensions.spacingXxl,
+                    vertical: AppDimensions.spacingXxl,
                   ),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        top: AppDimensions.spacingLg,
-                        left: AppDimensions.spacingLg,
-                        child: AppIconButton(
-                          iconData: Icons.arrow_back_rounded,
-                          onPressed: () => Navigator.pop(context),
-                          size: .small,
-                        ),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        maxWidth: AppDimensions.maxWidth,
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        spacing: AppDimensions.spacingXxl,
+                      child: Stack(
                         children: [
-                          Text(
-                            'Local\nLobby',
-                            key: const Key('title'),
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.displayLarge,
-                          ),
-                          Expanded(
-                            child: _PlayerList(
-                              players: playerListController.players,
-                              onReorder: playerListController.reorderPlayer,
-                              onListTileTap: (index) => managePlayer(index),
+                          Positioned(
+                            top: AppDimensions.spacingLg,
+                            left: AppDimensions.spacingLg,
+                            child: AppIconButton(
+                              iconData: Icons.arrow_back_rounded,
+                              onPressed: () => Navigator.pop(context),
+                              size: .small,
                             ),
                           ),
-                          _ActionButtonRow(
-                            onPerson: () {
-                              playerListController.addPlayer(PlayerType.human);
-                            },
-                            onPlay: () {
-                              Navigator.pushNamed(
-                                context,
-                                '/game',
-                                arguments: playerListController.players,
-                              );
-                            },
-                            onBot: () {},
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            spacing: AppDimensions.spacingXxl,
+                            children: [
+                              Text(
+                                'Local\nLobby',
+                                key: const Key('title'),
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.displayLarge,
+                              ),
+                              Expanded(
+                                child: _PlayerList(
+                                  players: playerListController.players,
+                                  onReorder: playerListController.reorderPlayer,
+                                  onListTileTap: (index) => managePlayer(index),
+                                ),
+                              ),
+                              AppIconButton(
+                                iconData: Icons.play_arrow_rounded,
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    '/game',
+                                    arguments: playerListController.players,
+                                  );
+                                },
+                                size: .large,
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
+                IgnorePointer(
+                  ignoring: !_isDialOpen,
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 200),
+                    opacity: _isDialOpen ? 1 : 0,
+                    child: GestureDetector(
+                      onTap: () => setState(() => _isDialOpen = false),
+                      child: Container(
+                        color: Theme.of(context).colorScheme.scrim,
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: AppDimensions.spacingLg,
+                  right: AppDimensions.spacingLg,
+                  child: SpeedDialMenu(
+                    onAddHuman: () {
+                      playerListController.addPlayer(PlayerType.human);
+                    },
+                    onAddBot: () {}, // Not fully polished yet, so left empty.
+                    onToggle: (isOpen) => setState(() => _isDialOpen = isOpen),
+                  ),
+                ),
+              ],
             ),
           ),
         );
@@ -198,39 +225,96 @@ class _PlayerListTile extends StatelessWidget {
   }
 }
 
-class _ActionButtonRow extends StatelessWidget {
-  final VoidCallback onPerson;
-  final VoidCallback onPlay;
-  final VoidCallback onBot;
+class SpeedDialMenu extends StatefulWidget {
+  final VoidCallback onAddHuman;
+  final VoidCallback onAddBot;
+  final ValueChanged<bool>? onToggle;
 
-  const _ActionButtonRow({
-    required this.onPerson,
-    required this.onPlay,
-    required this.onBot,
+  const SpeedDialMenu({
+    super.key,
+    required this.onAddHuman,
+    required this.onAddBot,
+    this.onToggle,
+  });
+
+  @override
+  State<SpeedDialMenu> createState() => _SpeedDialMenuState();
+}
+
+class _SpeedDialMenuState extends State<SpeedDialMenu> {
+  bool _isOpen = false;
+
+  void _toggleMenu() {
+    setState(() => _isOpen = !_isOpen);
+    widget.onToggle?.call(_isOpen);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      spacing: AppDimensions.spacingMd,
+      children: [
+        _SpeedDialItem(
+          index: 0,
+          isOpen: _isOpen,
+          iconData: Icons.smart_toy_rounded,
+          onPressed: () {
+            _toggleMenu();
+            widget.onAddBot();
+          },
+        ),
+        _SpeedDialItem(
+          index: 1,
+          isOpen: _isOpen,
+          iconData: Icons.person_rounded,
+          onPressed: () {
+            _toggleMenu();
+            widget.onAddHuman();
+          },
+        ),
+        AppIconButton(
+          iconData: _isOpen ? Icons.close_rounded : Icons.add_rounded,
+          onPressed: _toggleMenu,
+          size: AppIconButtonSize.large,
+        ),
+      ],
+    );
+  }
+}
+
+class _SpeedDialItem extends StatelessWidget {
+  final int index;
+  final bool isOpen;
+  final IconData iconData;
+  final VoidCallback onPressed;
+
+  const _SpeedDialItem({
+    required this.index,
+    required this.isOpen,
+    required this.iconData,
+    required this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      spacing: AppDimensions.spacingLg,
-      children: [
-        AppIconButton(
-          iconData: Icons.person_rounded,
-          onPressed: onPerson,
-          size: .large,
+    return AnimatedSlide(
+      duration: Duration(milliseconds: 200 + index * 50),
+      curve: Curves.easeOut,
+      offset: isOpen ? Offset.zero : const Offset(0, 0.3),
+      child: AnimatedOpacity(
+        duration: Duration(milliseconds: 200 + index * 50),
+        opacity: isOpen ? 1 : 0,
+        child: IgnorePointer(
+          ignoring: !isOpen,
+          child: AppIconButton(
+            iconData: iconData,
+            onPressed: onPressed,
+            size: .large,
+          ),
         ),
-        AppIconButton(
-          iconData: Icons.play_arrow_rounded,
-          onPressed: onPlay,
-          size: .large,
-        ),
-        AppIconButton(
-          iconData: Icons.smart_toy_rounded,
-          onPressed: onBot,
-          size: .large,
-        ),
-      ],
+      ),
     );
   }
 }
