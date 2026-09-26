@@ -3,22 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:reaction_chain/data/board.dart';
 import 'package:reaction_chain/data/game_state.dart';
 import 'package:reaction_chain/data/player.dart';
+import 'package:reaction_chain/services/local_storage.dart';
 
 class GameController extends ChangeNotifier {
   static const defaultRows = 9;
   static const defaultCols = 6;
 
   final GameState state;
+  final LocalStorage localStorage;
 
-  // New game constructor
-  GameController({required List<Player> players, Board? board})
-    : state = GameState(
-        board: board ?? Board(rows: defaultRows, cols: defaultCols),
-        players: players,
-      );
+  GameController({
+    required List<Player> players,
+    required this.localStorage,
+    Board? board,
+  }) : state = GameState(
+         board: board ?? Board(rows: defaultRows, cols: defaultCols),
+         players: players,
+       );
 
-  // Resume game from state constructor
-  GameController.fromState(this.state);
+  GameController.fromState(this.state, {required this.localStorage});
 
   Board get board => state.board;
   List<Player> get players => List.unmodifiable(state.players);
@@ -42,8 +45,15 @@ class GameController extends ChangeNotifier {
     final events = _chainReaction(coordinates);
     _recalculatePlayerOrbCounts();
     _nextTurn();
+    _saveState();
 
     return events;
+  }
+
+  Future<void> _saveState() {
+    return hasWinner
+        ? localStorage.clearGameState()
+        : localStorage.saveGameState(state);
   }
 
   void _nextTurn() {

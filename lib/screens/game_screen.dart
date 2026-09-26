@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reaction_chain/controllers/game_controller.dart';
 import 'package:reaction_chain/data/board.dart';
+import 'package:reaction_chain/data/game_state.dart';
 import 'package:reaction_chain/data/player.dart';
 import 'package:reaction_chain/data/settings.dart';
 import 'package:reaction_chain/providers/local_storage_provider.dart';
@@ -11,10 +12,14 @@ import 'package:reaction_chain/widgets/board_widget.dart';
 import 'package:reaction_chain/widgets/settings_dialog.dart';
 
 class GameScreen extends StatefulWidget {
-  final List<Player> players;
-  final Settings settings;
+  final List<Player>? players;
+  final GameState? savedState;
 
-  const GameScreen({super.key, required this.players, required this.settings});
+  const GameScreen({super.key, this.players, this.savedState})
+    : assert(
+        players != null || savedState != null,
+        'Provide either players (new game) or savedState (resume).',
+      );
 
   @override
   State<GameScreen> createState() => _GameScreenState();
@@ -22,11 +27,33 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen> {
   late final GameController gameController;
+  late final Settings settings;
+  bool _isInitialized = false;
 
   @override
-  void initState() {
-    super.initState();
-    gameController = GameController(players: widget.players);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_isInitialized) {
+      final localStorage = LocalStorageProvider.of(context);
+      settings = localStorage.loadSettings();
+      gameController = widget.savedState != null
+          ? GameController.fromState(
+              widget.savedState!,
+              localStorage: localStorage,
+            )
+          : GameController(
+              players: widget.players!,
+              localStorage: localStorage,
+            );
+      _isInitialized = true;
+    }
+  }
+
+  @override
+  void dispose() {
+    gameController.dispose();
+    super.dispose();
   }
 
   void onCellTap(Coordinates coordinates) async {
@@ -69,16 +96,18 @@ class _GameScreenState extends State<GameScreen> {
                               children: [
                                 _TopMenuBar(
                                   turnPlayer: gameController.currentPlayer,
-                                  onHome: () {},
+                                  onHome: () => Navigator.of(
+                                    context,
+                                  ).popUntil((route) => route.isFirst),
                                   onSettings: () {
                                     showDialog(
                                       context: context,
                                       builder: (context) => SettingsDialog(
-                                        settings: widget.settings,
+                                        settings: settings,
                                         onSettingsChange: () =>
                                             LocalStorageProvider.of(
                                               context,
-                                            ).saveSettings(widget.settings),
+                                            ).saveSettings(settings),
                                       ),
                                     );
                                   },

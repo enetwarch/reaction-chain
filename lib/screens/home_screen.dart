@@ -2,13 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:reaction_chain/providers/local_storage_provider.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
 import 'package:reaction_chain/components/icon_button.dart';
+import 'package:reaction_chain/widgets/confirmation_dialog.dart';
 import 'package:reaction_chain/widgets/settings_dialog.dart';
 import 'package:reaction_chain/data/settings.dart';
 
-class HomeScreen extends StatelessWidget {
-  final Settings settings;
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
-  const HomeScreen({super.key, required this.settings});
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late final Settings settings;
+  bool _isInitialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_isInitialized) {
+      final localStorage = LocalStorageProvider.of(context);
+      settings = localStorage.loadSettings();
+      _isInitialized = true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +56,32 @@ class HomeScreen extends StatelessWidget {
                   AppIconButton(
                     iconData: Icons.play_arrow_rounded,
                     onPressed: () {
-                      Navigator.pushNamed(context, '/local-lobby');
+                      final savedGameState = LocalStorageProvider.of(
+                        context,
+                      ).loadGameState();
+                      if (savedGameState == null) {
+                        Navigator.pushNamed(context, '/local-lobby');
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (context) => ConfirmationDialog(
+                            title: 'Resume',
+                            iconData: Icons.sports_esports_rounded,
+                            onClose: () {
+                              LocalStorageProvider.of(context).clearGameState();
+                              Navigator.pop(context);
+                            },
+                            onConfirm: () {
+                              Navigator.pop(context);
+                              Navigator.pushNamed(
+                                context,
+                                '/game',
+                                arguments: savedGameState,
+                              );
+                            },
+                          ),
+                        );
+                      }
                     },
                     size: .xl,
                   ),

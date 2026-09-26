@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reaction_chain/data/game_state.dart';
 import 'package:reaction_chain/data/player.dart';
 import 'package:reaction_chain/providers/local_storage_provider.dart';
 import 'package:reaction_chain/screens/game_screen.dart';
@@ -42,26 +43,22 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final savedSettings = localStorage.loadSettings();
-    final savedPlayers = localStorage.loadPlayers();
-    // TODO: implement persistence for game state.
-    final savedGame = localStorage.loadGameState();
-
     return LocalStorageProvider(
       localStorage: localStorage,
       child: MaterialApp(
         title: 'Reaction Chain',
         theme: AppTheme.dark,
         routes: {
-          '/home': (context) => HomeScreen(settings: savedSettings),
+          '/home': (context) => HomeScreen(),
           '/local-lobby': (context) => LocalLobbyScreen(),
           '/game': (context) {
-            final players =
-                ModalRoute.of(context)!.settings.arguments as List<Player>;
-            return GameScreen(players: players, settings: savedSettings);
+            final args = ModalRoute.of(context)!.settings.arguments;
+            return args is GameState
+                ? GameScreen(savedState: args)
+                : GameScreen(players: args as List<Player>);
           },
         },
-        home: HomeScreen(settings: savedSettings),
+        home: HomeScreen(),
       ),
     );
   }
