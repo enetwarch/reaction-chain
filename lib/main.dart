@@ -6,6 +6,7 @@ import 'package:reaction_chain/screens/game_screen.dart';
 import 'package:reaction_chain/screens/home_screen.dart';
 import 'package:reaction_chain/screens/local_lobby_screen.dart';
 import 'package:reaction_chain/services/local_storage.dart';
+import 'package:reaction_chain/theme/app_scroll.dart';
 import 'package:reaction_chain/theme/app_theme.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,6 +49,7 @@ class App extends StatelessWidget {
       child: MaterialApp(
         title: 'Reaction Chain',
         theme: AppTheme.dark,
+        scrollBehavior: AppScrollBehavior(),
         routes: {
           '/home': (context) => HomeScreen(),
           '/local-lobby': (context) => LocalLobbyScreen(),

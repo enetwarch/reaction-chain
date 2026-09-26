@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:reaction_chain/controllers/game_controller.dart';
 import 'package:reaction_chain/data/board.dart';
@@ -112,7 +113,10 @@ class _GameScreenState extends State<GameScreen> {
                                     );
                                   },
                                 ),
-                                _PlayerScores(players: gameController.players),
+                                _PlayerScores(
+                                  players: gameController.players,
+                                  currentPlayer: gameController.currentPlayer,
+                                ),
                               ],
                             ),
 
@@ -219,43 +223,139 @@ class _TopMenuBar extends StatelessWidget {
   }
 }
 
-class _PlayerScores extends StatelessWidget {
+class _PlayerScores extends StatefulWidget {
+  final Player currentPlayer;
   final List<Player> players;
 
-  const _PlayerScores({required this.players});
+  const _PlayerScores({required this.currentPlayer, required this.players});
+
+  @override
+  State<_PlayerScores> createState() => _PlayerScoresState();
+}
+
+class _PlayerScoresState extends State<_PlayerScores> {
+  final _scrollController = ScrollController();
+  late final Map<PlayerColor, GlobalKey> _cardKeys;
+
+  @override
+  void initState() {
+    super.initState();
+    _cardKeys = {
+      for (final player in widget.players) player.color: GlobalKey(),
+    };
+  }
+
+  @override
+  void didUpdateWidget(_PlayerScores oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.currentPlayer.color != widget.currentPlayer.color) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _scrollToCurrentPlayer(),
+      );
+    }
+  }
+
+  void _scrollToCurrentPlayer() {
+    final key = _cardKeys[widget.currentPlayer.color];
+    final context = key?.currentContext;
+    if (context == null) return;
+
+    Scrollable.ensureVisible(
+      context,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+      alignment: 0.5,
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      spacing: AppDimensions.spacingMd,
-      children: [
-        for (final player in players) ...[
-          Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerLowest,
-              borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+    return Listener(
+      onPointerSignal: (event) {
+        if (event is PointerScrollEvent) {
+          _scrollController.jumpTo(
+            (_scrollController.offset + event.scrollDelta.dy).clamp(
+              0.0,
+              _scrollController.position.maxScrollExtent,
             ),
-            padding: EdgeInsets.symmetric(
-              vertical: AppDimensions.spacingMd,
-              horizontal: AppDimensions.spacingLg,
-            ),
-            child: Row(
-              spacing: AppDimensions.spacingMd,
-              children: [
-                Icon(
-                  Icons.circle,
-                  size: AppDimensions.dotSm,
-                  color: context.playerColors.resolve(player.color),
+          );
+        }
+      },
+      child: SingleChildScrollView(
+        controller: _scrollController,
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          spacing: AppDimensions.spacingMd,
+          children: [
+            for (final player in widget.players) ...[
+              Container(
+                key: _cardKeys[player.color],
+                child: _PlayerScoreCard(
+                  player: player,
+                  isActive: player.color == widget.currentPlayer.color,
                 ),
-                Text(
-                  player.orbCount.toString(),
-                  style: Theme.of(context).textTheme.displayMedium,
-                ),
-              ],
-            ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PlayerScoreCard extends StatelessWidget {
+  final Player player;
+  final bool isActive;
+
+  const _PlayerScoreCard({required this.player, required this.isActive});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final background = theme.colorScheme.surfaceContainerLowest;
+    final foreground = theme.colorScheme.onSurface;
+
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: 0.0, end: isActive ? 1.0 : 0.0),
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
+      builder: (context, t, child) {
+        final currentBg = Color.lerp(background, foreground, t);
+        final currentFg = Color.lerp(foreground, background, t);
+
+        return Container(
+          decoration: BoxDecoration(
+            color: currentBg,
+            borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
           ),
-        ],
-      ],
+          padding: EdgeInsets.symmetric(
+            vertical: AppDimensions.spacingMd,
+            horizontal: AppDimensions.spacingLg,
+          ),
+          child: Row(
+            spacing: AppDimensions.spacingMd,
+            children: [
+              Icon(
+                Icons.circle,
+                size: AppDimensions.dotSm,
+                color: context.playerColors.resolve(player.color),
+              ),
+              Text(
+                player.orbCount.toString(),
+                style: theme.textTheme.displayMedium?.copyWith(
+                  color: currentFg,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
