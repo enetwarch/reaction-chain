@@ -155,10 +155,12 @@ class _NameRowState extends State<_NameRow> {
                 ? TextField(
                     controller: _controller,
                     autofocus: true,
+                    maxLength: 10,
                     style: theme.textTheme.displayMedium,
                     decoration: const InputDecoration(
                       border: InputBorder.none,
                       isDense: true,
+                      counterText: '',
                     ),
                     onSubmitted: (_) => _submit(),
                   )

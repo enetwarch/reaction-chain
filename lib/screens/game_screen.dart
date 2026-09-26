@@ -168,22 +168,29 @@ class _TopMenuBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: AppDimensions.spacingMd,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: AppDimensions.spacingMd),
-            child: Row(
-              spacing: AppDimensions.spacingMd,
-              children: [
-                Icon(
-                  turnPlayer.displayIcon,
-                  size: AppDimensions.iconSm,
-                  color: context.playerColors.resolve(turnPlayer.color),
-                ),
-                Text(
-                  turnPlayer.displayName,
-                  style: Theme.of(context).textTheme.displayMedium,
-                ),
-              ],
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: AppDimensions.spacingMd),
+              child: Row(
+                spacing: AppDimensions.spacingMd,
+                children: [
+                  Icon(
+                    turnPlayer.displayIcon,
+                    size: AppDimensions.iconSm,
+                    color: context.playerColors.resolve(turnPlayer.color),
+                  ),
+                  Expanded(
+                    child: Text(
+                      turnPlayer.displayName,
+                      style: Theme.of(context).textTheme.displayMedium,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Row(
