@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:reaction_chain/data/player.dart';
+import 'package:reaction_chain/services/local_storage.dart';
 
 // Needs to be passed to a `ListenableBuilder()` to work properly.
 class PlayerListController extends ChangeNotifier {
   final List<Player> _players;
+  final LocalStorage localStorage;
 
-  PlayerListController({List<Player>? initialPlayers})
-    : _players =
-          initialPlayers ??
-          [HumanPlayer(color: PlayerColor.red, name: 'Player 1')];
+  PlayerListController({
+    required this.localStorage,
+    List<Player>? initialPlayers,
+  }) : _players = initialPlayers ?? localStorage.loadPlayers();
 
   List<Player> get players => List.unmodifiable(_players);
 
@@ -22,8 +24,6 @@ class PlayerListController extends ChangeNotifier {
   PlayerColor? get availableColor => PlayerColor.values
       .where((color) => !_players.any((player) => player.color == color))
       .firstOrNull;
-
-  void refresh() => notifyListeners();
 
   void addPlayer(PlayerType type) {
     if (isFull) return;
@@ -45,7 +45,7 @@ class PlayerListController extends ChangeNotifier {
         );
     }
 
-    notifyListeners();
+    _saveAndNotify();
   }
 
   void reorderPlayer(int oldIndex, int newIndex) {
@@ -55,7 +55,7 @@ class PlayerListController extends ChangeNotifier {
     final player = _players.removeAt(oldIndex);
     _players.insert(newIndex, player);
 
-    notifyListeners();
+    _saveAndNotify();
   }
 
   void changePlayerColor(int index, PlayerColor newColor) {
@@ -71,7 +71,7 @@ class PlayerListController extends ChangeNotifier {
     }
     selectedPlayer.color = newColor;
 
-    notifyListeners();
+    _saveAndNotify();
   }
 
   // Only for HumanPlayer players.
@@ -82,13 +82,18 @@ class PlayerListController extends ChangeNotifier {
       humanPlayer.name = newName;
     }
 
-    notifyListeners();
+    _saveAndNotify();
   }
 
   void removePlayer(int index) {
     if (isMinimum) return;
     _players.removeAt(index);
 
+    _saveAndNotify();
+  }
+
+  void _saveAndNotify() {
+    localStorage.savePlayers(_players);
     notifyListeners();
   }
 }

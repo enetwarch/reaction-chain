@@ -42,9 +42,9 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settings = localStorage.loadSettings();
-    // TODO: implement persistence for players and game state.
+    final savedSettings = localStorage.loadSettings();
     final savedPlayers = localStorage.loadPlayers();
+    // TODO: implement persistence for game state.
     final savedGame = localStorage.loadGameState();
 
     return LocalStorageProvider(
@@ -53,15 +53,15 @@ class App extends StatelessWidget {
         title: 'Reaction Chain',
         theme: AppTheme.dark,
         routes: {
-          '/home': (context) => HomeScreen(settings: settings),
-          '/local-lobby': (context) => const LocalLobbyScreen(),
+          '/home': (context) => HomeScreen(settings: savedSettings),
+          '/local-lobby': (context) => LocalLobbyScreen(),
           '/game': (context) {
             final players =
                 ModalRoute.of(context)!.settings.arguments as List<Player>;
-            return GameScreen(players: players, settings: settings);
+            return GameScreen(players: players, settings: savedSettings);
           },
         },
-        home: HomeScreen(settings: settings),
+        home: HomeScreen(settings: savedSettings),
       ),
     );
   }

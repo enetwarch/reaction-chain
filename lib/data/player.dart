@@ -48,6 +48,11 @@ sealed class Player {
 
   Map<String, dynamic> toJson();
 
+  static List<Player> get defaultPlayers => [
+    HumanPlayer(name: 'Player 1', color: PlayerColor.red),
+    HumanPlayer(name: 'Player 2', color: PlayerColor.green),
+  ];
+
   /// Deserializes either a HumanPlayer or BotPlayer based on the stored 'type'
   factory Player.fromJson(Map<String, dynamic> json) {
     final type = json['type'] as String?;

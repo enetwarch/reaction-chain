@@ -30,7 +30,7 @@ class LocalStorage {
 
   List<Player> loadPlayers() {
     final rawList = _preferences.getStringList(_playersKey);
-    if (rawList == null) return [];
+    if (rawList == null) return Player.defaultPlayers;
     try {
       return rawList
           .map(
@@ -38,7 +38,7 @@ class LocalStorage {
           )
           .toList();
     } catch (_) {
-      return [];
+      return Player.defaultPlayers;
     }
   }
 

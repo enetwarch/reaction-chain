@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reaction_chain/controllers/player_list_controller.dart';
 import 'package:reaction_chain/data/player.dart';
+import 'package:reaction_chain/providers/local_storage_provider.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
 import 'package:reaction_chain/theme/player_colors.dart';
 import 'package:reaction_chain/widgets/player_card_dialog.dart';
@@ -14,8 +15,31 @@ class LocalLobbyScreen extends StatefulWidget {
 }
 
 class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
-  final PlayerListController playerListController = PlayerListController();
+  late final PlayerListController playerListController;
   bool _isDialOpen = false;
+  bool _isInitialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_isInitialized) {
+      playerListController = PlayerListController(
+        localStorage: LocalStorageProvider.of(context),
+      );
+      _isInitialized = true;
+    }
+  }
+
+  @override
+  void dispose() {
+    playerListController.dispose();
+    super.dispose();
+  }
+
+  void addHumanPlayer() {
+    playerListController.addPlayer(PlayerType.human);
+  }
 
   void managePlayer(int index) {
     if (playerListController.playerCount <= index) return;
