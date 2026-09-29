@@ -37,7 +37,7 @@ class AppDimensions {
   static const dotMd = 36.0;
 
   // Cell sizes
-  static const cell = 56.0;
+  static const cell = 48.0;
 
   // Screen sizes
   static const overlayWidthMd = 240.0;

@@ -11,45 +11,53 @@ class BoardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Theme.of(context).colorScheme.surfaceContainerLow,
-          width: AppDimensions.borderSm,
-        ),
-        borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(
-          (AppDimensions.radiusSm - AppDimensions.borderSm).clamp(
-            0,
-            double.infinity,
+    return Align(
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Theme.of(context).colorScheme.surfaceContainerLow,
+            width: AppDimensions.borderSm,
           ),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
         ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(
+            (AppDimensions.radiusSm - AppDimensions.borderSm).clamp(
+              0,
+              double.infinity,
+            ),
+          ),
 
-        // Forcing this to be a grid was really hard, so I stuck to a
-        // Column and Row combination instead.
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          spacing: AppDimensions.borderSm,
-          children: [
-            for (int row = 0; row < board.rows; row++)
-              Row(
-                spacing: AppDimensions.borderSm,
-                children: [
-                  for (int col = 0; col < board.cols; col++)
-                    Expanded(
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: _CellWidget(
-                          cell: board.cell((row: row, col: col))!,
-                          onTap: () => onCellTap((row: row, col: col)),
+          // Forcing this to be a grid was really hard, so I stuck to a
+          // Column and Row combination instead.
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            spacing: AppDimensions.borderSm,
+            children: [
+              for (int row = 0; row < board.rows; row++)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: AppDimensions.borderSm,
+                  children: [
+                    for (int col = 0; col < board.cols; col++)
+                      Flexible(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            maxWidth: AppDimensions.cell,
+                          ),
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: _CellWidget(
+                              cell: board.cell((row: row, col: col))!,
+                              onTap: () => onCellTap((row: row, col: col)),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                ],
-              ),
-          ],
+                  ],
+                ),
+            ],
+          ),
         ),
       ),
     );
