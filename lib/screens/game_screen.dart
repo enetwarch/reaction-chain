@@ -10,6 +10,7 @@ import 'package:reaction_chain/theme/app_dimensions.dart';
 import 'package:reaction_chain/theme/player_colors.dart';
 import 'package:reaction_chain/components/icon_button.dart';
 import 'package:reaction_chain/widgets/board_widget.dart';
+import 'package:reaction_chain/widgets/confirmation_dialog.dart';
 import 'package:reaction_chain/widgets/settings_dialog.dart';
 
 class GameScreen extends StatefulWidget {
@@ -58,16 +59,35 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void onCellTap(Coordinates coordinates) async {
+    if (gameController.hasWinner) return showWinnerDialog();
     final events = gameController.placeOrb(coordinates);
     for (final event in events) {
       await _animateExplosion(event);
     }
     gameController.refresh();
+    if (gameController.hasWinner) showWinnerDialog();
   }
 
   Future<void> _animateExplosion(ExplosionEvent event) async {
     gameController.refresh();
     await Future.delayed(const Duration(milliseconds: 10));
+  }
+
+  void showWinnerDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => ConfirmationDialog(
+        title: 'Victory',
+        iconData: Icons.workspace_premium_rounded,
+        iconColor: context.playerColors.resolve(
+          gameController.currentPlayer.color,
+        ),
+        onClose: () => Navigator.pop(context),
+        onConfirm: () {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        },
+      ),
+    );
   }
 
   @override
@@ -134,6 +154,27 @@ class _GameScreenState extends State<GameScreen> {
                             // Bottom Section
                             _BottomMenuBar(
                               turnNumber: gameController.turnNumber,
+                              onUndo: () {},
+                              onResign: () {
+                                if (gameController.hasWinner) {
+                                  return showWinnerDialog();
+                                }
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => ConfirmationDialog(
+                                    title: 'Resign',
+                                    iconData: Icons.flag_rounded,
+                                    iconColor: context.playerColors.resolve(
+                                      gameController.currentPlayer.color,
+                                    ),
+                                    onClose: () => Navigator.pop(context),
+                                    onConfirm: () {
+                                      Navigator.pop(context);
+                                      gameController.resignCurrentPlayer();
+                                    },
+                                  ),
+                                );
+                              },
                             ),
                           ],
                         ),
@@ -299,6 +340,7 @@ class _PlayerScoresState extends State<_PlayerScores> {
                 child: _PlayerScoreCard(
                   player: player,
                   isActive: player.color == widget.currentPlayer.color,
+                  isOut: player.isOut,
                 ),
               ),
             ],
@@ -312,8 +354,13 @@ class _PlayerScoresState extends State<_PlayerScores> {
 class _PlayerScoreCard extends StatelessWidget {
   final Player player;
   final bool isActive;
+  final bool isOut;
 
-  const _PlayerScoreCard({required this.player, required this.isActive});
+  const _PlayerScoreCard({
+    required this.player,
+    required this.isActive,
+    required this.isOut,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -344,7 +391,9 @@ class _PlayerScoreCard extends StatelessWidget {
               Icon(
                 Icons.circle,
                 size: AppDimensions.dotSm,
-                color: context.playerColors.resolve(player.color),
+                color: isOut
+                    ? Theme.of(context).colorScheme.onSurface
+                    : context.playerColors.resolve(player.color),
               ),
               Text(
                 player.orbCount.toString(),
@@ -362,8 +411,14 @@ class _PlayerScoreCard extends StatelessWidget {
 
 class _BottomMenuBar extends StatelessWidget {
   final int turnNumber;
+  final VoidCallback onUndo;
+  final VoidCallback onResign;
 
-  const _BottomMenuBar({required this.turnNumber});
+  const _BottomMenuBar({
+    required this.turnNumber,
+    required this.onUndo,
+    required this.onResign,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -388,24 +443,16 @@ class _BottomMenuBar extends StatelessWidget {
             spacing: AppDimensions.spacingMd,
             children: [
               AppIconButton(
-                iconData: Icons.flag_rounded,
-                onPressed: () {},
-                size: .small,
-                backgroundColor: Theme.of(
-                  context,
-                ).colorScheme.surfaceContainerLow,
-              ),
-              AppIconButton(
                 iconData: Icons.undo_rounded,
-                onPressed: () {},
+                onPressed: onUndo,
                 size: .small,
                 backgroundColor: Theme.of(
                   context,
                 ).colorScheme.surfaceContainerLow,
               ),
               AppIconButton(
-                iconData: Icons.pause_rounded,
-                onPressed: () {},
+                iconData: Icons.flag_rounded,
+                onPressed: onResign,
                 size: .small,
                 backgroundColor: Theme.of(
                   context,

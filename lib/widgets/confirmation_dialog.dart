@@ -5,6 +5,7 @@ import 'package:reaction_chain/theme/app_dimensions.dart';
 class ConfirmationDialog extends StatelessWidget {
   final String title;
   final IconData? iconData;
+  final Color? iconColor;
   final String? description;
   final VoidCallback onClose;
   final VoidCallback onConfirm;
@@ -13,6 +14,7 @@ class ConfirmationDialog extends StatelessWidget {
     super.key,
     required this.title,
     this.iconData,
+    this.iconColor,
     this.description,
     required this.onClose,
     required this.onConfirm,
@@ -38,7 +40,8 @@ class ConfirmationDialog extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.displayLarge,
               ),
-              if (iconData != null) Icon(iconData, size: AppDimensions.iconXl),
+              if (iconData != null)
+                Icon(iconData, size: AppDimensions.iconXl, color: iconColor),
               if (description != null)
                 Text(
                   description!,

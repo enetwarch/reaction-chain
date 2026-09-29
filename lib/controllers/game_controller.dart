@@ -50,6 +50,15 @@ class GameController extends ChangeNotifier {
     return events;
   }
 
+  void resignCurrentPlayer() {
+    if (!currentPlayer.isOut) {
+      currentPlayer.isOut = true;
+    }
+
+    _nextTurn();
+    _saveState();
+  }
+
   Future<void> _saveState() {
     return hasWinner
         ? localStorage.clearGameState()

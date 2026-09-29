@@ -73,7 +73,9 @@ class _CellWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = cell.occupant != null
-        ? context.playerColors.resolve(cell.occupant!.color)
+        ? cell.occupant!.isOut
+              ? Theme.of(context).colorScheme.onSurface
+              : context.playerColors.resolve(cell.occupant!.color)
         : null;
 
     return GestureDetector(
