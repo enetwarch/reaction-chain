@@ -154,7 +154,6 @@ class _GameScreenState extends State<GameScreen> {
                             // Bottom Section
                             _BottomMenuBar(
                               turnNumber: gameController.turnNumber,
-                              onUndo: () {},
                               onResign: () {
                                 if (gameController.hasWinner) {
                                   return showWinnerDialog();
@@ -411,14 +410,9 @@ class _PlayerScoreCard extends StatelessWidget {
 
 class _BottomMenuBar extends StatelessWidget {
   final int turnNumber;
-  final VoidCallback onUndo;
   final VoidCallback onResign;
 
-  const _BottomMenuBar({
-    required this.turnNumber,
-    required this.onUndo,
-    required this.onResign,
-  });
+  const _BottomMenuBar({required this.turnNumber, required this.onResign});
 
   @override
   Widget build(BuildContext context) {
@@ -442,14 +436,6 @@ class _BottomMenuBar extends StatelessWidget {
           Row(
             spacing: AppDimensions.spacingMd,
             children: [
-              AppIconButton(
-                iconData: Icons.undo_rounded,
-                onPressed: onUndo,
-                size: .small,
-                backgroundColor: Theme.of(
-                  context,
-                ).colorScheme.surfaceContainerLow,
-              ),
               AppIconButton(
                 iconData: Icons.flag_rounded,
                 onPressed: onResign,
