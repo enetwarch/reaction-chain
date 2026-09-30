@@ -100,21 +100,40 @@ class _CellWidget extends StatelessWidget {
 class _OrbCluster extends StatelessWidget {
   final int count;
   final Color? color;
+  final Duration duration;
 
-  const _OrbCluster({required this.count, required this.color});
+  const _OrbCluster({
+    required this.count,
+    required this.color,
+    // ignore: unused_element_parameter
+    this.duration = const Duration(milliseconds: 200),
+  });
 
   @override
   Widget build(BuildContext context) {
     if (count == 0 || color == null) return const SizedBox.shrink();
     return Stack(
       children: [
-        for (final alignment in _alignmentsFor(count))
-          Align(
+        for (final (i, alignment) in _alignmentsFor(count).indexed)
+          AnimatedAlign(
+            key: ValueKey(i),
             alignment: alignment,
-            child: Container(
-              width: AppDimensions.dotSm,
-              height: AppDimensions.dotSm,
-              decoration: BoxDecoration(shape: BoxShape.circle, color: color!),
+            duration: duration,
+            curve: Curves.easeOutBack,
+            child: TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0.0, end: 1.0),
+              duration: duration,
+              curve: Curves.easeOutBack,
+              builder: (context, scale, child) =>
+                  Transform.scale(scale: scale, child: child),
+              child: Container(
+                width: AppDimensions.dotSm,
+                height: AppDimensions.dotSm,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: color!,
+                ),
+              ),
             ),
           ),
       ],

@@ -31,6 +31,7 @@ class _GameScreenState extends State<GameScreen> {
   late final GameController gameController;
   late final Settings settings;
   bool _isInitialized = false;
+  bool _isAnimating = false;
 
   @override
   void didChangeDependencies() {
@@ -59,13 +60,22 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void onCellTap(Coordinates coordinates) async {
+    if (_isAnimating) return;
     if (gameController.hasWinner) return showWinnerDialog();
-    final events = gameController.placeOrb(coordinates);
-    for (final event in events) {
-      await _animateExplosion(event);
+
+    _isAnimating = true;
+    try {
+      final events = gameController.placeOrb(coordinates);
+      for (final event in events) {
+        await _animateExplosion(event);
+        if (!mounted) return;
+      }
+      gameController.refresh();
+    } finally {
+      _isAnimating = false;
     }
-    gameController.refresh();
-    if (gameController.hasWinner) showWinnerDialog();
+
+    if (mounted && gameController.hasWinner) showWinnerDialog();
   }
 
   Future<void> _animateExplosion(ExplosionEvent event) async {
