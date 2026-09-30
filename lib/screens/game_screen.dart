@@ -62,25 +62,25 @@ class _GameScreenState extends State<GameScreen> {
   void onCellTap(Coordinates coordinates) async {
     if (_isAnimating) return;
     if (gameController.hasWinner) return showWinnerDialog();
+    if (!gameController.placeOrb(coordinates)) return;
 
     _isAnimating = true;
     try {
-      final events = gameController.placeOrb(coordinates);
-      for (final event in events) {
-        await _animateExplosion(event);
+      while (gameController.hasUnstableCells) {
+        await Future.delayed(const Duration(milliseconds: 300));
         if (!mounted) return;
+        gameController.stepExplosions();
       }
-      gameController.refresh();
+      gameController.endTurn();
+      await Future.delayed(const Duration(milliseconds: 300));
     } finally {
       _isAnimating = false;
     }
 
-    if (mounted && gameController.hasWinner) showWinnerDialog();
-  }
-
-  Future<void> _animateExplosion(ExplosionEvent event) async {
-    gameController.refresh();
-    await Future.delayed(const Duration(milliseconds: 10));
+    if (mounted && gameController.hasWinner) {
+      await Future.delayed(const Duration(milliseconds: 500));
+      showWinnerDialog();
+    }
   }
 
   void showWinnerDialog() {

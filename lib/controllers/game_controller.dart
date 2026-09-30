@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:reaction_chain/data/board.dart';
 import 'package:reaction_chain/data/game_state.dart';
@@ -29,25 +28,67 @@ class GameController extends ChangeNotifier {
   int get turnNumber => state.turnNumber;
   Player get currentPlayer => state.currentPlayer;
   bool get hasWinner => state.hasWinner;
+  bool get hasUnstableCells =>
+      board.cells.any((row) => row.any((cell) => cell.isCritical));
 
   void refresh() => notifyListeners();
 
-  List<ExplosionEvent> placeOrb(Coordinates coordinates) {
-    if (hasWinner) return [];
+  bool placeOrb(Coordinates coordinates) {
+    if (hasWinner) return false;
     final cell = board.cell(coordinates)!;
-    if (cell.occupant != null && cell.occupant != currentPlayer) return [];
+    if (cell.occupant != null && cell.occupant != currentPlayer) return false;
 
     cell.occupant = currentPlayer;
     cell.orbCount++;
     currentPlayer.hasMoved = true;
     state.moves.add((player: currentPlayer, coordinates: coordinates));
 
-    final events = _chainReaction(coordinates);
+    notifyListeners();
+    return true;
+  }
+
+  List<ExplosionEvent> stepExplosions() {
+    final unstable = [
+      for (final row in board.cells)
+        for (final cell in row)
+          if (cell.isCritical) cell.coordinates,
+    ];
+
+    final events = <ExplosionEvent>[];
+    for (final coordinates in unstable) {
+      final cell = board.cell(coordinates)!;
+      cell.orbCount -= cell.criticalMass;
+      if (cell.orbCount <= 0) {
+        cell.occupant = null;
+      }
+
+      final neighbors = board.getNeighbors(coordinates);
+      for (final neighbor in neighbors) {
+        neighbor.occupant = currentPlayer;
+        neighbor.orbCount++;
+      }
+
+      events.add(
+        ExplosionEvent(
+          owner: currentPlayer,
+          source: coordinates,
+          affectedNeighbors: neighbors
+              .map((neighbor) => neighbor.coordinates)
+              .toList(),
+        ),
+      );
+    }
+
+    _recalculatePlayerOrbCounts();
+    notifyListeners();
+    return events;
+  }
+
+  void endTurn() {
     _recalculatePlayerOrbCounts();
     _nextTurn();
     _saveState();
-
-    return events;
+    notifyListeners();
   }
 
   void resignCurrentPlayer() {
@@ -71,45 +112,6 @@ class GameController extends ChangeNotifier {
     while (currentPlayer.isOut) {
       state.turnPointer = (state.turnPointer + 1) % players.length;
     }
-  }
-
-  List<ExplosionEvent> _chainReaction(Coordinates coordinates) {
-    final events = <ExplosionEvent>[];
-    final queue = Queue<Coordinates>()..add(coordinates);
-
-    while (queue.isNotEmpty) {
-      final coords = queue.removeFirst();
-      final cell = board.cell(coords)!;
-      if (!cell.isCritical) continue;
-
-      final owner = cell.occupant;
-      cell.orbCount -= cell.criticalMass;
-      if (cell.orbCount <= 0) {
-        cell.occupant = null;
-      }
-
-      final neighbors = board.getNeighbors(coords);
-      for (final neighbor in neighbors) {
-        neighbor.occupant = owner;
-        neighbor.orbCount++;
-
-        if (neighbor.isCritical) {
-          queue.add(neighbor.coordinates);
-        }
-      }
-
-      events.add(
-        ExplosionEvent(
-          owner: owner,
-          source: coords,
-          affectedNeighbors: neighbors
-              .map((neighbor) => neighbor.coordinates)
-              .toList(),
-        ),
-      );
-    }
-
-    return events;
   }
 
   void _recalculatePlayerOrbCounts() {
