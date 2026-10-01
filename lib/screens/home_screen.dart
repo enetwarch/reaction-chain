@@ -87,19 +87,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   _ActionButtonRow(
                     onInfo: () {},
-                    onSettings: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => SettingsDialog(
-                          settings: settings,
-                          onSettingsChange: () {
-                            LocalStorageProvider.of(
-                              context,
-                            ).saveSettings(settings);
-                          },
-                        ),
-                      );
-                    },
+                    onSettings: () => showDialog(
+                      context: context,
+                      builder: (context) => SettingsDialog(
+                        settings: settings,
+                        onSettingsChange: () {
+                          LocalStorageProvider.of(
+                            context,
+                          ).saveSettings(settings);
+                        },
+                      ),
+                    ),
                     onCode: () {},
                   ),
                 ],
@@ -112,9 +110,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class _ActionButtonRow extends StatelessWidget {
+class _ActionButtonRow extends StatefulWidget {
   final VoidCallback onInfo;
-  final VoidCallback onSettings;
+  final Future<void> Function() onSettings;
   final VoidCallback onCode;
 
   const _ActionButtonRow({
@@ -122,6 +120,13 @@ class _ActionButtonRow extends StatelessWidget {
     required this.onSettings,
     required this.onCode,
   });
+
+  @override
+  State<_ActionButtonRow> createState() => _ActionButtonRowState();
+}
+
+class _ActionButtonRowState extends State<_ActionButtonRow> {
+  bool _isSettingsOpen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -132,21 +137,26 @@ class _ActionButtonRow extends StatelessWidget {
         Flexible(
           child: AppIconButton(
             iconData: Icons.info_rounded,
-            onPressed: onInfo,
+            onPressed: widget.onInfo,
             size: .large,
           ),
         ),
         Flexible(
-          child: AppIconButton(
+          child: AppToggleIconButton(
             iconData: Icons.settings_rounded,
-            onPressed: onSettings,
+            value: _isSettingsOpen,
+            onChanged: (_) async {
+              setState(() => _isSettingsOpen = true);
+              await widget.onSettings();
+              setState(() => _isSettingsOpen = false);
+            },
             size: .large,
           ),
         ),
         Flexible(
           child: AppIconButton(
             iconData: Icons.code_rounded,
-            onPressed: onCode,
+            onPressed: widget.onCode,
             size: .large,
           ),
         ),

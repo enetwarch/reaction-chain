@@ -130,18 +130,16 @@ class _GameScreenState extends State<GameScreen> {
                                   onHome: () => Navigator.of(
                                     context,
                                   ).popUntil((route) => route.isFirst),
-                                  onSettings: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => SettingsDialog(
-                                        settings: settings,
-                                        onSettingsChange: () =>
-                                            LocalStorageProvider.of(
-                                              context,
-                                            ).saveSettings(settings),
-                                      ),
-                                    );
-                                  },
+                                  onSettings: () => showDialog(
+                                    context: context,
+                                    builder: (context) => SettingsDialog(
+                                      settings: settings,
+                                      onSettingsChange: () =>
+                                          LocalStorageProvider.of(
+                                            context,
+                                          ).saveSettings(settings),
+                                    ),
+                                  ),
                                 ),
                                 _PlayerScores(
                                   players: gameController.players,
@@ -164,11 +162,13 @@ class _GameScreenState extends State<GameScreen> {
                             // Bottom Section
                             _BottomMenuBar(
                               turnNumber: gameController.turnNumber,
-                              onResign: () {
+                              onResign: () async {
+                                if (_isAnimating) return;
                                 if (gameController.hasWinner) {
                                   return showWinnerDialog();
                                 }
-                                showDialog(
+
+                                await showDialog<void>(
                                   context: context,
                                   builder: (context) => ConfirmationDialog(
                                     title: 'Resign',
@@ -183,6 +183,13 @@ class _GameScreenState extends State<GameScreen> {
                                     },
                                   ),
                                 );
+
+                                if (gameController.hasWinner) {
+                                  await Future.delayed(
+                                    const Duration(milliseconds: 300),
+                                  );
+                                  showWinnerDialog();
+                                }
                               },
                             ),
                           ],
@@ -200,16 +207,23 @@ class _GameScreenState extends State<GameScreen> {
   }
 }
 
-class _TopMenuBar extends StatelessWidget {
+class _TopMenuBar extends StatefulWidget {
   final Player turnPlayer;
   final VoidCallback onHome;
-  final VoidCallback onSettings;
+  final Future<void> Function() onSettings;
 
   const _TopMenuBar({
     required this.turnPlayer,
     required this.onHome,
     required this.onSettings,
   });
+
+  @override
+  State<_TopMenuBar> createState() => _TopMenuBarState();
+}
+
+class _TopMenuBarState extends State<_TopMenuBar> {
+  bool _isSettingsOpen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -231,13 +245,15 @@ class _TopMenuBar extends StatelessWidget {
                 spacing: AppDimensions.spacingMd,
                 children: [
                   Icon(
-                    turnPlayer.displayIcon,
+                    widget.turnPlayer.displayIcon,
                     size: AppDimensions.iconSm,
-                    color: context.playerColors.resolve(turnPlayer.color),
+                    color: context.playerColors.resolve(
+                      widget.turnPlayer.color,
+                    ),
                   ),
                   Expanded(
                     child: Text(
-                      turnPlayer.displayName,
+                      widget.turnPlayer.displayName,
                       style: Theme.of(context).textTheme.displayMedium,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
@@ -252,15 +268,20 @@ class _TopMenuBar extends StatelessWidget {
             children: [
               AppIconButton(
                 iconData: Icons.home_rounded,
-                onPressed: onHome,
+                onPressed: widget.onHome,
                 size: .small,
                 backgroundColor: Theme.of(
                   context,
                 ).colorScheme.surfaceContainerLow,
               ),
-              AppIconButton(
+              AppToggleIconButton(
                 iconData: Icons.settings_rounded,
-                onPressed: onSettings,
+                value: _isSettingsOpen,
+                onChanged: (_) async {
+                  setState(() => _isSettingsOpen = true);
+                  await widget.onSettings();
+                  setState(() => _isSettingsOpen = false);
+                },
                 backgroundColor: Theme.of(
                   context,
                 ).colorScheme.surfaceContainerLow,
@@ -418,11 +439,18 @@ class _PlayerScoreCard extends StatelessWidget {
   }
 }
 
-class _BottomMenuBar extends StatelessWidget {
+class _BottomMenuBar extends StatefulWidget {
   final int turnNumber;
-  final VoidCallback onResign;
+  final Future<void> Function() onResign;
 
   const _BottomMenuBar({required this.turnNumber, required this.onResign});
+
+  @override
+  State<_BottomMenuBar> createState() => _BottomMenuBarState();
+}
+
+class _BottomMenuBarState extends State<_BottomMenuBar> {
+  bool _isResignOpen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -439,16 +467,21 @@ class _BottomMenuBar extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: AppDimensions.spacingMd),
             child: Text(
-              'Turn ${turnNumber.toString()}',
+              'Turn ${widget.turnNumber.toString()}',
               style: Theme.of(context).textTheme.displayMedium,
             ),
           ),
           Row(
             spacing: AppDimensions.spacingMd,
             children: [
-              AppIconButton(
+              AppToggleIconButton(
                 iconData: Icons.flag_rounded,
-                onPressed: onResign,
+                value: _isResignOpen,
+                onChanged: (_) async {
+                  setState(() => _isResignOpen = true);
+                  await widget.onResign();
+                  setState(() => _isResignOpen = false);
+                },
                 size: .small,
                 backgroundColor: Theme.of(
                   context,
