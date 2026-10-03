@@ -53,21 +53,17 @@ class _GameScreenState extends State<GameScreen> {
             );
       highlightController = HighlightController(
         settings: settings,
+        colorOfBlink: (context) =>
+            Theme.of(context).colorScheme.surfaceContainerLow,
+        colorOfArm: (context) => Theme.of(context).colorScheme.onSurface,
         onDisarm: () async {
           if (_isAnimating) return;
           highlightController.clear();
           await Future.delayed(const Duration(seconds: 1));
-          highlightController.blink(
-            gameController.currentPlayerUnstableCells,
-            colorOf: (context) =>
-                Theme.of(context).colorScheme.surfaceContainerLow,
-          );
+          highlightController.blink(gameController.currentPlayerUnstableCells);
         },
       );
-      highlightController.blink(
-        gameController.currentPlayerUnstableCells,
-        colorOf: (context) => Theme.of(context).colorScheme.surfaceContainerLow,
-      );
+      highlightController.blink(gameController.currentPlayerUnstableCells);
       _isInitialized = true;
     }
   }
@@ -82,11 +78,9 @@ class _GameScreenState extends State<GameScreen> {
     if (_isAnimating) return;
     if (gameController.hasWinner) return showWinnerDialog();
     if (!gameController.canPlaceOrb(coordinates)) return;
-    if (!highlightController.isArmed(coordinates)) {
-      return highlightController.arm(
-        coordinates,
-        colorOf: (context) => Theme.of(context).colorScheme.onSurface,
-      );
+    if (settings.confirmationEnabled &&
+        !highlightController.isArmed(coordinates)) {
+      return highlightController.arm(coordinates);
     }
 
     _isAnimating = true;
@@ -104,13 +98,11 @@ class _GameScreenState extends State<GameScreen> {
       await Future.delayed(const Duration(milliseconds: 300));
     } finally {
       _isAnimating = false;
-      highlightController.blink(
-        gameController.currentPlayerUnstableCells,
-        colorOf: (context) => Theme.of(context).colorScheme.surfaceContainerLow,
-      );
+      highlightController.blink(gameController.currentPlayerUnstableCells);
     }
 
     if (mounted && gameController.hasWinner) {
+      highlightController.clear();
       await Future.delayed(const Duration(milliseconds: 500));
       showWinnerDialog();
     }
@@ -160,19 +152,39 @@ class _GameScreenState extends State<GameScreen> {
                               children: [
                                 _TopMenuBar(
                                   turnPlayer: gameController.currentPlayer,
-                                  onHome: () => Navigator.of(
-                                    context,
-                                  ).popUntil((route) => route.isFirst),
-                                  onSettings: () => showDialog(
-                                    context: context,
-                                    builder: (context) => SettingsDialog(
-                                      settings: settings,
-                                      onSettingsChange: () =>
+                                  onHome: () {
+                                    Navigator.of(
+                                      context,
+                                    ).popUntil((route) => route.isFirst);
+                                  },
+                                  onSettings: () async {
+                                    if (_isAnimating) return;
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => SettingsDialog(
+                                        settings: settings,
+                                        onSettingsChange: () {
                                           LocalStorageProvider.of(
                                             context,
-                                          ).saveSettings(settings),
-                                    ),
-                                  ),
+                                          ).saveSettings(settings);
+                                          if (!settings.confirmationEnabled &&
+                                              highlightController.hasArmed) {
+                                            highlightController.clear();
+                                          }
+                                          if (!settings.highlightEnabled &&
+                                              highlightController.hasBlinking) {
+                                            highlightController.clear();
+                                          }
+                                          if (settings.highlightEnabled) {
+                                            highlightController.blink(
+                                              gameController
+                                                  .currentPlayerUnstableCells,
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    );
+                                  },
                                 ),
                                 _PlayerScores(
                                   players: gameController.players,

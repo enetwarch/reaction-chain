@@ -6,12 +6,26 @@ import 'package:reaction_chain/data/settings.dart';
 
 class HighlightController extends ChangeNotifier {
   final Settings settings;
+  final Color Function(BuildContext) colorOfBlink;
+  final Color Function(BuildContext) colorOfArm;
   final VoidCallback? onDisarm;
 
-  HighlightController({required this.settings, this.onDisarm});
+  HighlightController({
+    required this.settings,
+    required this.colorOfBlink,
+    required this.colorOfArm,
+    this.onDisarm,
+  });
 
   Map<Coordinates, CellHighlight> _highlights = const {};
   Map<Coordinates, CellHighlight> get highlights => _highlights;
+
+  bool get hasArmed => _highlights.values.any(
+    (highlight) => highlight.mode == CellHighlightMode.armed,
+  );
+  bool get hasBlinking => _highlights.values.any(
+    (highlight) => highlight.mode == CellHighlightMode.blink,
+  );
 
   static const _armDuration = Duration(seconds: 5);
   Timer? _armTimer;
@@ -22,26 +36,21 @@ class HighlightController extends ChangeNotifier {
     super.dispose();
   }
 
-  void blink(
-    List<Coordinates> coordinates, {
-    required Color Function(BuildContext) colorOf,
-  }) {
+  void blink(List<Coordinates> coordinates) {
+    if (!settings.highlightEnabled) return clear();
     _cancelArmTimer();
     _highlights = {
       for (final coords in coordinates)
-        coords: CellHighlight.blink(colorOf: colorOf),
+        coords: CellHighlight.blink(colorOf: colorOfBlink),
     };
     notifyListeners();
   }
 
-  void arm(
-    Coordinates coordinates, {
-    required Color Function(BuildContext) colorOf,
-  }) {
+  void arm(Coordinates coordinates) {
     _cancelArmTimer();
     _armTimer?.cancel();
     _highlights = Map.unmodifiable({
-      coordinates: CellHighlight.armed(colorOf: colorOf),
+      coordinates: CellHighlight.armed(colorOf: colorOfArm),
     });
     notifyListeners();
     _armTimer = Timer(_armDuration, disarm);
