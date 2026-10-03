@@ -26,8 +26,6 @@ class AppIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     if (size == AppIconButtonSize.small || size == AppIconButtonSize.medium) {
       final iconSize = size == AppIconButtonSize.small
           ? AppDimensions.iconSm
@@ -38,7 +36,7 @@ class AppIconButton extends StatelessWidget {
       return IconButton(
         onPressed: onPressed,
         icon: Icon(iconData, size: iconSize, color: iconColor),
-        style: theme.iconButtonTheme.style?.copyWith(
+        style: Theme.of(context).iconButtonTheme.style?.copyWith(
           fixedSize: WidgetStatePropertyAll(buttonSize),
           backgroundColor: backgroundColor != null
               ? WidgetStatePropertyAll(backgroundColor)
@@ -70,7 +68,7 @@ class AppIconButton extends StatelessWidget {
         return IconButton(
           onPressed: onPressed,
           icon: Icon(iconData, size: iconSize, color: iconColor),
-          style: theme.iconButtonTheme.style?.copyWith(
+          style: Theme.of(context).iconButtonTheme.style?.copyWith(
             fixedSize: WidgetStatePropertyAll(Size(side, side)),
             backgroundColor: backgroundColor != null
                 ? WidgetStatePropertyAll(backgroundColor)
@@ -118,9 +116,9 @@ class AppToggleIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final inactiveBg = backgroundColor ?? theme.colorScheme.surfaceContainerLow;
-    final inactiveFg = iconColor ?? theme.colorScheme.onSurface;
+    final inactiveBg =
+        backgroundColor ?? Theme.of(context).colorScheme.surfaceContainerLowest;
+    final inactiveFg = iconColor ?? Theme.of(context).colorScheme.onSurface;
 
     // Active colors invert inactive defaults unless explicitly provided
     final activeBg = activeBackgroundColor ?? inactiveFg;
