@@ -55,13 +55,13 @@ class _SettingsDialogState extends State<SettingsDialog> {
                   },
                 ),
                 AppToggleIconButton(
-                  iconData: Icons.music_note_rounded,
-                  offIconData: Icons.music_off_rounded,
-                  value: widget.settings.musicEnabled,
+                  iconData: Icons.vibration_rounded,
+                  offIconData: Icons.mobile_off_rounded,
+                  value: widget.settings.vibrationEnabled,
                   size: AppIconButtonSize.large,
                   onChanged: (value) {
                     setState(() {
-                      widget.settings.musicEnabled = value;
+                      widget.settings.vibrationEnabled = value;
                     });
                     widget.onSettingsChange();
                   },
@@ -75,6 +75,18 @@ class _SettingsDialogState extends State<SettingsDialog> {
               spacing: AppDimensions.spacingLg,
               children: [
                 AppToggleIconButton(
+                  iconData: Icons.highlight_rounded,
+                  offIconData: Icons.highlight_outlined,
+                  value: widget.settings.highlightEnabled,
+                  size: AppIconButtonSize.large,
+                  onChanged: (value) {
+                    setState(() {
+                      widget.settings.highlightEnabled = value;
+                    });
+                    widget.onSettingsChange();
+                  },
+                ),
+                AppToggleIconButton(
                   iconData: Icons.touch_app_rounded,
                   offIconData: Icons.touch_app_outlined,
                   value: widget.settings.confirmationEnabled,
@@ -82,18 +94,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
                   onChanged: (value) {
                     setState(() {
                       widget.settings.confirmationEnabled = value;
-                    });
-                    widget.onSettingsChange();
-                  },
-                ),
-                AppToggleIconButton(
-                  iconData: Icons.vibration_rounded,
-                  offIconData: Icons.mobile_off_rounded,
-                  value: widget.settings.vibrationEnabled,
-                  size: AppIconButtonSize.large,
-                  onChanged: (value) {
-                    setState(() {
-                      widget.settings.vibrationEnabled = value;
                     });
                     widget.onSettingsChange();
                   },
