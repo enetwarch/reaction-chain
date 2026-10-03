@@ -31,12 +31,25 @@ class GameController extends ChangeNotifier {
   bool get hasUnstableCells =>
       board.cells.any((row) => row.any((cell) => cell.isCritical));
 
+  List<Coordinates> get currentPlayerUnstableCells => [
+    for (final row in board.cells)
+      for (final cell in row)
+        if (cell.occupant == currentPlayer &&
+            cell.orbCount == cell.criticalMass - 1)
+          cell.coordinates,
+  ];
+
   void refresh() => notifyListeners();
 
-  bool placeOrb(Coordinates coordinates) {
+  bool canPlaceOrb(Coordinates coordinates) {
     if (hasWinner) return false;
     final cell = board.cell(coordinates)!;
-    if (cell.occupant != null && cell.occupant != currentPlayer) return false;
+    return cell.occupant == null || cell.occupant == currentPlayer;
+  }
+
+  void placeOrb(Coordinates coordinates) {
+    if (!canPlaceOrb(coordinates)) return;
+    final cell = board.cell(coordinates)!;
 
     cell.occupant = currentPlayer;
     cell.orbCount++;
@@ -44,7 +57,6 @@ class GameController extends ChangeNotifier {
     state.moves.add((player: currentPlayer, coordinates: coordinates));
 
     notifyListeners();
-    return true;
   }
 
   List<ExplosionEvent> stepExplosions() {

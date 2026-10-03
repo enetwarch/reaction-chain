@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:reaction_chain/controllers/game_controller.dart';
+import 'package:reaction_chain/controllers/highlight_controller.dart';
 import 'package:reaction_chain/data/board.dart';
 import 'package:reaction_chain/data/game_state.dart';
 import 'package:reaction_chain/data/player.dart';
@@ -28,8 +29,9 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  late final GameController gameController;
   late final Settings settings;
+  late final GameController gameController;
+  late final HighlightController highlightController;
   bool _isInitialized = false;
   bool _isAnimating = false;
 
@@ -49,6 +51,23 @@ class _GameScreenState extends State<GameScreen> {
               players: widget.players!,
               localStorage: localStorage,
             );
+      highlightController = HighlightController(
+        settings: settings,
+        onDisarm: () async {
+          if (_isAnimating) return;
+          highlightController.clear();
+          await Future.delayed(const Duration(seconds: 1));
+          highlightController.blink(
+            gameController.currentPlayerUnstableCells,
+            colorOf: (context) =>
+                Theme.of(context).colorScheme.surfaceContainerLow,
+          );
+        },
+      );
+      highlightController.blink(
+        gameController.currentPlayerUnstableCells,
+        colorOf: (context) => Theme.of(context).colorScheme.surfaceContainerLow,
+      );
       _isInitialized = true;
     }
   }
@@ -62,9 +81,19 @@ class _GameScreenState extends State<GameScreen> {
   void onCellTap(Coordinates coordinates) async {
     if (_isAnimating) return;
     if (gameController.hasWinner) return showWinnerDialog();
-    if (!gameController.placeOrb(coordinates)) return;
+    if (!gameController.canPlaceOrb(coordinates)) return;
+    if (!highlightController.isArmed(coordinates)) {
+      return highlightController.arm(
+        coordinates,
+        colorOf: (context) => Theme.of(context).colorScheme.onSurface,
+      );
+    }
 
     _isAnimating = true;
+    highlightController.disarm();
+    highlightController.clear();
+    gameController.placeOrb(coordinates);
+
     try {
       while (gameController.hasUnstableCells) {
         await Future.delayed(const Duration(milliseconds: 300));
@@ -75,6 +104,10 @@ class _GameScreenState extends State<GameScreen> {
       await Future.delayed(const Duration(milliseconds: 300));
     } finally {
       _isAnimating = false;
+      highlightController.blink(
+        gameController.currentPlayerUnstableCells,
+        colorOf: (context) => Theme.of(context).colorScheme.surfaceContainerLow,
+      );
     }
 
     if (mounted && gameController.hasWinner) {
@@ -153,9 +186,15 @@ class _GameScreenState extends State<GameScreen> {
                               padding: EdgeInsets.symmetric(
                                 vertical: AppDimensions.spacingLg,
                               ),
-                              child: BoardWidget(
-                                board: gameController.board,
-                                onCellTap: onCellTap,
+                              child: ListenableBuilder(
+                                listenable: highlightController,
+                                builder: (context, child) {
+                                  return BoardWidget(
+                                    board: gameController.board,
+                                    onCellTap: onCellTap,
+                                    highlights: highlightController.highlights,
+                                  );
+                                },
                               ),
                             ),
 

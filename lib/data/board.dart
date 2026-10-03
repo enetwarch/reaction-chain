@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
 import 'package:reaction_chain/data/player.dart';
 
 typedef Coordinates = ({int row, int col});
@@ -150,4 +153,18 @@ class ExplosionEvent {
     required this.owner,
     required this.affectedNeighbors,
   });
+}
+
+// For cell highlighting in the widgets.
+enum CellHighlightMode { blink, armed }
+
+class CellHighlight {
+  final CellHighlightMode mode;
+  final Color Function(BuildContext context) colorOf;
+
+  const CellHighlight.blink({required this.colorOf})
+    : mode = CellHighlightMode.blink;
+
+  const CellHighlight.armed({required this.colorOf})
+    : mode = CellHighlightMode.armed;
 }
