@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reaction_chain/data/board.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
+import 'package:reaction_chain/theme/app_durations.dart';
 import 'package:reaction_chain/theme/player_colors.dart';
 
 class BoardWidget extends StatelessWidget {
@@ -85,12 +86,12 @@ class _CellWidget extends StatefulWidget {
 
 class _CellWidgetState extends State<_CellWidget>
     with TickerProviderStateMixin {
-  static const _blinkPeriod = Duration(milliseconds: 1000);
-  static const _armIn = Duration(milliseconds: 250);
-  static const _armOut = Duration(milliseconds: 400);
-  static const _blinkOut = Duration(milliseconds: 300);
-  static const _explodeIn = Duration(milliseconds: 50);
-  static const _explodeOut = Duration(milliseconds: 50);
+  static const _blinkPeriod = AppDurations.slow;
+  static const _armIn = AppDurations.brisk;
+  static const _armOut = AppDurations.brisk;
+  static const _blinkOut = AppDurations.brisk;
+  static const _explodeIn = AppDurations.flash;
+  static const _explodeOut = AppDurations.flash;
 
   late final AnimationController _blink;
   late final AnimationController _arm;
@@ -209,7 +210,7 @@ class _OrbCluster extends StatelessWidget {
     required this.count,
     required this.color,
     // ignore: unused_element_parameter
-    this.duration = const Duration(milliseconds: 200),
+    this.duration = AppDurations.fast,
   });
 
   @override

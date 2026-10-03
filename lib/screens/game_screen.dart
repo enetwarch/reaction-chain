@@ -8,6 +8,7 @@ import 'package:reaction_chain/data/player.dart';
 import 'package:reaction_chain/data/settings.dart';
 import 'package:reaction_chain/providers/local_storage_provider.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
+import 'package:reaction_chain/theme/app_durations.dart';
 import 'package:reaction_chain/theme/player_colors.dart';
 import 'package:reaction_chain/components/icon_button.dart';
 import 'package:reaction_chain/widgets/board_widget.dart';
@@ -61,7 +62,7 @@ class _GameScreenState extends State<GameScreen> {
         onDisarm: () async {
           if (_isAnimating) return;
           highlightController.clear();
-          await Future.delayed(const Duration(seconds: 1));
+          await Future.delayed(AppDurations.slow);
           highlightController.blink(gameController.currentPlayerUnstableCells);
         },
       );
@@ -95,14 +96,14 @@ class _GameScreenState extends State<GameScreen> {
         highlightController.exploding(
           gameController.currentPlayerCriticalCells,
         );
-        await Future.delayed(const Duration(milliseconds: 300));
+        await Future.delayed(AppDurations.brisk);
         if (!mounted) return;
         gameController.stepExplosions();
         highlightController.clear();
       }
 
       gameController.endTurn();
-      await Future.delayed(const Duration(milliseconds: 300));
+      await Future.delayed(AppDurations.brisk);
     } finally {
       _isAnimating = false;
       highlightController.blink(gameController.currentPlayerUnstableCells);
@@ -110,7 +111,7 @@ class _GameScreenState extends State<GameScreen> {
 
     if (mounted && gameController.hasWinner) {
       highlightController.clear();
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(AppDurations.medium);
       showWinnerDialog();
     }
   }
@@ -243,9 +244,7 @@ class _GameScreenState extends State<GameScreen> {
                                 );
 
                                 if (gameController.hasWinner) {
-                                  await Future.delayed(
-                                    const Duration(milliseconds: 300),
-                                  );
+                                  await Future.delayed(AppDurations.brisk);
                                   showWinnerDialog();
                                 }
                               },
@@ -391,7 +390,7 @@ class _PlayerScoresState extends State<_PlayerScores> {
 
     Scrollable.ensureVisible(
       context,
-      duration: const Duration(milliseconds: 300),
+      duration: AppDurations.brisk,
       curve: Curves.easeOut,
       alignment: 0.5,
     );
@@ -458,7 +457,7 @@ class _PlayerScoreCard extends StatelessWidget {
 
     return TweenAnimationBuilder<double>(
       tween: Tween<double>(begin: 0.0, end: isActive ? 1.0 : 0.0),
-      duration: const Duration(milliseconds: 200),
+      duration: AppDurations.brisk,
       curve: Curves.easeInOut,
       builder: (context, t, child) {
         final currentBg = Color.lerp(background, foreground, t);

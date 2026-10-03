@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
+import 'package:reaction_chain/theme/app_durations.dart';
 
 enum AppIconButtonSize { small, medium, large, xl }
 
@@ -107,7 +108,7 @@ class AppToggleIconButton extends StatelessWidget {
     required this.value,
     required this.onChanged,
     this.size = AppIconButtonSize.small,
-    this.transitionDuration = const Duration(milliseconds: 200),
+    this.transitionDuration = AppDurations.fast,
     this.backgroundColor,
     this.iconColor,
     this.activeBackgroundColor,
@@ -173,8 +174,8 @@ class AppArmedIconButton extends StatefulWidget {
     required this.onConfirm,
     this.onArm,
     this.size = AppIconButtonSize.small,
-    this.armDuration = const Duration(seconds: 5),
-    this.transitionDuration = const Duration(milliseconds: 200),
+    this.armDuration = AppDurations.arm,
+    this.transitionDuration = AppDurations.fast,
     this.backgroundColor,
     this.iconColor,
   });

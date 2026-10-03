@@ -3,6 +3,7 @@ import 'package:reaction_chain/controllers/player_list_controller.dart';
 import 'package:reaction_chain/data/player.dart';
 import 'package:reaction_chain/providers/local_storage_provider.dart';
 import 'package:reaction_chain/theme/app_dimensions.dart';
+import 'package:reaction_chain/theme/app_durations.dart';
 import 'package:reaction_chain/theme/player_colors.dart';
 import 'package:reaction_chain/widgets/player_card_dialog.dart';
 import 'package:reaction_chain/components/icon_button.dart';
@@ -137,7 +138,7 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
                 IgnorePointer(
                   ignoring: !_isDialOpen,
                   child: AnimatedOpacity(
-                    duration: const Duration(milliseconds: 200),
+                    duration: AppDurations.fast,
                     opacity: _isDialOpen ? 1 : 0,
                     child: GestureDetector(
                       onTap: () => setState(() => _isDialOpen = false),
