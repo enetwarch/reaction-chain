@@ -56,6 +56,8 @@ class _GameScreenState extends State<GameScreen> {
         colorOfBlink: (context) =>
             Theme.of(context).colorScheme.surfaceContainerLow,
         colorOfArm: (context) => Theme.of(context).colorScheme.onSurface,
+        colorOfExploding: (context) =>
+            Theme.of(context).colorScheme.surfaceContainerLow,
         onDisarm: () async {
           if (_isAnimating) return;
           highlightController.clear();
@@ -89,11 +91,16 @@ class _GameScreenState extends State<GameScreen> {
     gameController.placeOrb(coordinates);
 
     try {
-      while (gameController.hasUnstableCells) {
+      while (gameController.hasCriticalCells) {
+        highlightController.exploding(
+          gameController.currentPlayerCriticalCells,
+        );
         await Future.delayed(const Duration(milliseconds: 300));
         if (!mounted) return;
         gameController.stepExplosions();
+        highlightController.clear();
       }
+
       gameController.endTurn();
       await Future.delayed(const Duration(milliseconds: 300));
     } finally {

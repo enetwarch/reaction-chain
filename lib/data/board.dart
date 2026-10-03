@@ -156,7 +156,7 @@ class ExplosionEvent {
 }
 
 // For cell highlighting in the widgets.
-enum CellHighlightMode { blink, armed }
+enum CellHighlightMode { blink, armed, exploding }
 
 class CellHighlight {
   final CellHighlightMode mode;
@@ -167,4 +167,7 @@ class CellHighlight {
 
   const CellHighlight.armed({required this.colorOf})
     : mode = CellHighlightMode.armed;
+
+  const CellHighlight.exploding({required this.colorOf})
+    : mode = CellHighlightMode.exploding;
 }

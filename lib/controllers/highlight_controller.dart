@@ -8,12 +8,14 @@ class HighlightController extends ChangeNotifier {
   final Settings settings;
   final Color Function(BuildContext) colorOfBlink;
   final Color Function(BuildContext) colorOfArm;
+  final Color Function(BuildContext) colorOfExploding;
   final VoidCallback? onDisarm;
 
   HighlightController({
     required this.settings,
     required this.colorOfBlink,
     required this.colorOfArm,
+    required this.colorOfExploding,
     this.onDisarm,
   });
 
@@ -65,6 +67,15 @@ class HighlightController extends ChangeNotifier {
 
   bool isArmed(Coordinates coordinates) =>
       _highlights[coordinates]?.mode == CellHighlightMode.armed;
+
+  void exploding(List<Coordinates> coordinates) {
+    _cancelArmTimer();
+    _highlights = Map.unmodifiable({
+      for (final coords in coordinates)
+        coords: CellHighlight.exploding(colorOf: colorOfExploding),
+    });
+    notifyListeners();
+  }
 
   void clear() {
     _cancelArmTimer();

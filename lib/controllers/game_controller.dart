@@ -28,7 +28,7 @@ class GameController extends ChangeNotifier {
   int get turnNumber => state.turnNumber;
   Player get currentPlayer => state.currentPlayer;
   bool get hasWinner => state.hasWinner;
-  bool get hasUnstableCells =>
+  bool get hasCriticalCells =>
       board.cells.any((row) => row.any((cell) => cell.isCritical));
 
   List<Coordinates> get currentPlayerUnstableCells => [
@@ -36,6 +36,14 @@ class GameController extends ChangeNotifier {
       for (final cell in row)
         if (cell.occupant == currentPlayer &&
             cell.orbCount == cell.criticalMass - 1)
+          cell.coordinates,
+  ];
+
+  List<Coordinates> get currentPlayerCriticalCells => [
+    for (final row in board.cells)
+      for (final cell in row)
+        if (cell.occupant == currentPlayer &&
+            cell.orbCount == cell.criticalMass)
           cell.coordinates,
   ];
 

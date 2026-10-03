@@ -92,6 +92,8 @@ class _CellWidgetState extends State<_CellWidget>
   static const _armIn = Duration(milliseconds: 250);
   static const _armOut = Duration(milliseconds: 400);
   static const _blinkOut = Duration(milliseconds: 300);
+  static const _explodeIn = Duration(milliseconds: 50);
+  static const _explodeOut = Duration(milliseconds: 50);
 
   late final AnimationController _blink;
   late final AnimationController _arm;
@@ -123,6 +125,7 @@ class _CellWidgetState extends State<_CellWidget>
       case CellHighlightMode.blink:
         _blinkColorOf = widget.highlight!.colorOf;
       case CellHighlightMode.armed:
+      case CellHighlightMode.exploding:
         _armColorOf = widget.highlight!.colorOf;
     }
   }
@@ -132,12 +135,15 @@ class _CellWidgetState extends State<_CellWidget>
       case null:
         _blink.animateTo(0, duration: _blinkOut);
         _arm.animateTo(0, duration: _armOut);
-      case CellHighlightMode.armed:
-        _blink.animateTo(0, duration: _blinkOut);
-        _arm.animateTo(1, duration: _armIn);
       case CellHighlightMode.blink:
         _arm.animateTo(0, duration: _armOut);
         _blink.repeat(reverse: true);
+      case CellHighlightMode.armed:
+        _blink.animateTo(0, duration: _blinkOut);
+        _arm.animateTo(1, duration: _armIn);
+      case CellHighlightMode.exploding:
+        _blink.animateTo(0, duration: _explodeOut);
+        _arm.animateTo(1, duration: _explodeIn);
     }
   }
 
