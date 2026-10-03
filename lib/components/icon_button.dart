@@ -28,11 +28,11 @@ class AppIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     if (size == AppIconButtonSize.small || size == AppIconButtonSize.medium) {
       final iconSize = size == AppIconButtonSize.small
-          ? AppDimensions.iconSm
-          : AppDimensions.iconMd;
+          ? AppIconSizing.sm
+          : AppIconSizing.md;
       final buttonSize = size == AppIconButtonSize.small
-          ? AppDimensions.iconButtonSm
-          : AppDimensions.iconButtonMd;
+          ? AppIconButtonSizing.sm
+          : AppIconButtonSizing.md;
       return IconButton(
         onPressed: onPressed,
         icon: Icon(iconData, size: iconSize, color: iconColor),
@@ -47,14 +47,14 @@ class AppIconButton extends StatelessWidget {
 
     final (minSize, maxSize, radius) = switch (size) {
       AppIconButtonSize.large => (
-        AppDimensions.iconButtonLgMin,
-        AppDimensions.iconButtonLg,
+        AppIconButtonSizingMin.lg,
+        AppIconButtonSizing.lg,
         null,
       ),
       AppIconButtonSize.xl => (
-        AppDimensions.iconButtonXlMin,
-        AppDimensions.iconButtonXl,
-        AppDimensions.radiusMd,
+        AppIconButtonSizingMin.xl,
+        AppIconButtonSizing.xl,
+        AppRadius.md,
       ),
       AppIconButtonSize.small => throw StateError('handled above'),
       AppIconButtonSize.medium => throw StateError('handled above'),

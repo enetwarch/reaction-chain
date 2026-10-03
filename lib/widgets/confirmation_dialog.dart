@@ -24,16 +24,19 @@ class ConfirmationDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(minWidth: 240, maxWidth: 300),
+        constraints: const BoxConstraints(
+          minWidth: AppOverlayWidth.md,
+          maxWidth: AppOverlayWidth.lg,
+        ),
         child: Container(
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceContainerLowest,
-            borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
+            borderRadius: BorderRadius.circular(AppRadius.md),
           ),
-          padding: EdgeInsets.all(AppDimensions.spacingXl),
+          padding: EdgeInsets.all(AppSpacing.xl),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            spacing: AppDimensions.spacingLg,
+            spacing: AppSpacing.lg,
             children: [
               Text(
                 title,
@@ -41,7 +44,7 @@ class ConfirmationDialog extends StatelessWidget {
                 style: Theme.of(context).textTheme.displayLarge,
               ),
               if (iconData != null)
-                Icon(iconData, size: AppDimensions.iconXl, color: iconColor),
+                Icon(iconData, size: AppIconSizing.xl, color: iconColor),
               if (description != null)
                 Text(
                   description!,
@@ -50,7 +53,7 @@ class ConfirmationDialog extends StatelessWidget {
                 ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                spacing: AppDimensions.spacingLg,
+                spacing: AppSpacing.lg,
                 children: [
                   AppIconButton(
                     iconData: Icons.close_rounded,

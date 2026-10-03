@@ -25,16 +25,17 @@ class PlayerCardDialog extends StatelessWidget {
     return Dialog(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      insetPadding: const EdgeInsets.symmetric(
-        horizontal: AppDimensions.spacingXxl,
-      ),
+      insetPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
       child: ConstrainedBox(
-        constraints: const BoxConstraints(minWidth: 240, maxWidth: 300),
+        constraints: const BoxConstraints(
+          minWidth: AppOverlayWidth.md,
+          maxWidth: AppOverlayWidth.lg,
+        ),
         child: Container(
-          padding: const EdgeInsets.all(AppDimensions.spacingXl),
+          padding: const EdgeInsets.all(AppSpacing.xl),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceContainerLowest,
-            borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
+            borderRadius: BorderRadius.circular(AppRadius.md),
           ),
           child: Stack(
             children: [
@@ -67,15 +68,15 @@ class PlayerCardDialog extends StatelessWidget {
                 children: [
                   Icon(
                     player.displayIcon,
-                    size: AppDimensions.iconLg,
+                    size: AppIconSizing.lg,
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
-                  const SizedBox(height: AppDimensions.spacingSm),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(switch (player) {
                     HumanPlayer(name: final name) => name,
                     BotPlayer(level: final level) => 'Level $level',
                   }, style: Theme.of(context).textTheme.displayMedium),
-                  const SizedBox(height: AppDimensions.spacingXl),
+                  const SizedBox(height: AppSpacing.xl),
                   switch (player) {
                     HumanPlayer() => _NameRow(
                       name: player.displayName,
@@ -83,7 +84,7 @@ class PlayerCardDialog extends StatelessWidget {
                     ),
                     BotPlayer() => SizedBox(), // Placeholder, not in MVP.
                   },
-                  const SizedBox(height: AppDimensions.spacingMd),
+                  const SizedBox(height: AppSpacing.md),
                   _ColorEditRow(
                     selectedColor: player.color,
                     onColorChange: onColorChange,
@@ -142,13 +143,11 @@ class _NameRowState extends State<_NameRow> {
       children: [
         Expanded(
           child: Container(
-            height: AppDimensions.iconButtonSm.height,
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppDimensions.spacingLg,
-            ),
+            height: AppIconButtonSizing.sm.height,
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             decoration: BoxDecoration(
               color: theme.colorScheme.surfaceContainerLow,
-              borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+              borderRadius: BorderRadius.circular(AppRadius.sm),
             ),
             alignment: Alignment.centerLeft,
             child: _isEditing
@@ -171,7 +170,7 @@ class _NameRowState extends State<_NameRow> {
                   ),
           ),
         ),
-        const SizedBox(width: AppDimensions.spacingMd),
+        const SizedBox(width: AppSpacing.md),
         AppArmedIconButton(
           iconData: _isEditing ? Icons.check_rounded : Icons.edit_rounded,
           onArm: () => setState(() => _isEditing = true),
@@ -226,7 +225,7 @@ class _ColorEditRow extends StatelessWidget {
                 ),
                 shape: WidgetStatePropertyAll(
                   RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
                   ),
                 ),
               ),
@@ -234,18 +233,18 @@ class _ColorEditRow extends StatelessWidget {
                 filled: true,
                 fillColor: theme.colorScheme.surfaceContainerLow,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
                   borderSide: BorderSide.none,
                 ),
               ),
               trailingIcon: Icon(
                 Icons.expand_more_rounded,
-                size: AppDimensions.iconSm,
+                size: AppIconSizing.sm,
                 color: Theme.of(context).colorScheme.onSurface,
               ),
               selectedTrailingIcon: Icon(
                 Icons.expand_less_rounded,
-                size: AppDimensions.iconSm,
+                size: AppIconSizing.sm,
                 color: Theme.of(context).colorScheme.onSurface,
               ),
               dropdownMenuEntries: [
@@ -258,8 +257,8 @@ class _ColorEditRow extends StatelessWidget {
                       foregroundColor: theme.colorScheme.onSurface,
                     ),
                     leadingIcon: Container(
-                      width: AppDimensions.dotSm,
-                      height: AppDimensions.dotSm,
+                      width: AppDot.sm,
+                      height: AppDot.sm,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: context.playerColors.resolve(color),
@@ -270,7 +269,7 @@ class _ColorEditRow extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: AppDimensions.spacingMd),
+        const SizedBox(width: AppSpacing.md),
         AppIconButton(
           iconData: Icons.shuffle_rounded,
           onPressed: () =>

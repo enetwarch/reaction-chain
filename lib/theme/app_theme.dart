@@ -1,6 +1,7 @@
 // lib/theme/app_theme.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:reaction_chain/theme/app_dimensions.dart';
 import 'package:reaction_chain/theme/player_colors.dart';
 
 // Essentially the :root and CSS variables in Flutter.
@@ -20,14 +21,25 @@ class AppTheme {
       ),
       textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme)
           .copyWith(
-            displayLarge: GoogleFonts.poppins(fontSize: 48, fontWeight: .bold),
-            displayMedium: GoogleFonts.poppins(fontSize: 24, fontWeight: .bold),
-            displaySmall: GoogleFonts.poppins(fontSize: 16, fontWeight: .w500),
+            displayLarge: GoogleFonts.poppins(
+              fontSize: AppFontSizing.lg,
+              fontWeight: .bold,
+            ),
+            displayMedium: GoogleFonts.poppins(
+              fontSize: AppFontSizing.md,
+              fontWeight: .bold,
+            ),
+            displaySmall: GoogleFonts.poppins(
+              fontSize: AppFontSizing.sm,
+              fontWeight: .w500,
+            ),
           ),
       iconTheme: const IconThemeData(color: Color(0xFFE6E6E6)),
       iconButtonTheme: IconButtonThemeData(
         style: IconButton.styleFrom(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.sm),
+          ),
           backgroundColor: const Color(0xFF1A1F25), // surface
           foregroundColor: const Color(0xFFE6E6E6), // foreground
           padding: const EdgeInsets.all(0),

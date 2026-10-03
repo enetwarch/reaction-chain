@@ -22,34 +22,31 @@ class BoardWidget extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(
             color: Theme.of(context).colorScheme.surfaceContainerLow,
-            width: AppDimensions.borderSm,
+            width: AppBorder.sm,
           ),
-          borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+          borderRadius: BorderRadius.circular(AppRadius.sm),
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(
-            (AppDimensions.radiusSm - AppDimensions.borderSm).clamp(
-              0,
-              double.infinity,
-            ),
+            (AppRadius.sm - AppBorder.sm).clamp(0, double.infinity),
           ),
 
           // Forcing this to be a grid was really hard, so I stuck to a
           // Column and Row combination instead.
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            spacing: AppDimensions.borderSm,
+            spacing: AppBorder.sm,
             children: [
               for (int row = 0; row < board.rows; row++)
                 Row(
                   mainAxisSize: MainAxisSize.min,
-                  spacing: AppDimensions.borderSm,
+                  spacing: AppBorder.sm,
                   children: [
                     for (int col = 0; col < board.cols; col++)
                       Flexible(
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(
-                            maxWidth: AppDimensions.cell,
+                            maxWidth: AppConstraints.cell,
                           ),
                           child: AspectRatio(
                             aspectRatio: 1,
@@ -188,7 +185,7 @@ class _CellWidgetState extends State<_CellWidget>
               color: color,
               border: Border.all(
                 color: Theme.of(context).colorScheme.surfaceContainerLow,
-                width: AppDimensions.borderSm,
+                width: AppBorder.sm,
                 strokeAlign: BorderSide.strokeAlignOutside,
               ),
             ),
@@ -233,8 +230,8 @@ class _OrbCluster extends StatelessWidget {
               builder: (context, scale, child) =>
                   Transform.scale(scale: scale, child: child),
               child: Container(
-                width: AppDimensions.dotSm,
-                height: AppDimensions.dotSm,
+                width: AppDot.sm,
+                height: AppDot.sm,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: color!,

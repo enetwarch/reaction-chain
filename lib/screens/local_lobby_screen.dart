@@ -80,14 +80,12 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
               children: [
                 Container(
                   padding: EdgeInsets.symmetric(
-                    horizontal: AppDimensions.spacingXxl,
-                    vertical: AppDimensions.spacingXxl,
+                    horizontal: AppSpacing.xxl,
+                    vertical: AppSpacing.xxl,
                   ),
                   child: Center(
                     child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        maxWidth: AppDimensions.maxWidth,
-                      ),
+                      constraints: const BoxConstraints(maxWidth: AppWidth.max),
                       child: Stack(
                         children: [
                           Positioned(
@@ -102,7 +100,7 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
                           Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            spacing: AppDimensions.spacingXxl,
+                            spacing: AppSpacing.xxl,
                             children: [
                               Text(
                                 'Local\nLobby',
@@ -128,7 +126,7 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
                                 },
                                 size: .large,
                               ),
-                              SizedBox(height: AppDimensions.spacingLg),
+                              SizedBox(height: AppSpacing.lg),
                             ],
                           ),
                         ],
@@ -150,8 +148,8 @@ class _LocalLobbyScreenState extends State<LocalLobbyScreen> {
                   ),
                 ),
                 Positioned(
-                  bottom: AppDimensions.spacingLg,
-                  right: AppDimensions.spacingLg,
+                  bottom: AppSpacing.lg,
+                  right: AppSpacing.lg,
                   child: SpeedDialMenu(
                     isOpen: _isDialOpen,
                     onAddHuman: () {
@@ -189,7 +187,7 @@ class _PlayerList extends StatelessWidget {
       proxyDecorator: (child, index, animation) {
         return Material(
           color: Colors.transparent,
-          borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+          borderRadius: BorderRadius.circular(AppRadius.sm),
           clipBehavior: Clip.antiAlias,
           child: child,
         );
@@ -198,7 +196,7 @@ class _PlayerList extends StatelessWidget {
         for (final (index, player) in players.indexed)
           Padding(
             key: ValueKey(player),
-            padding: EdgeInsets.only(bottom: AppDimensions.spacingMd),
+            padding: EdgeInsets.only(bottom: AppSpacing.md),
             child: _PlayerListTile(
               player: player,
               index: index,
@@ -224,14 +222,14 @@ class _PlayerListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+      borderRadius: BorderRadius.circular(AppRadius.sm),
       clipBehavior: Clip.antiAlias,
       color: const Color(0xFF1A1F25),
       child: ListTile(
-        contentPadding: EdgeInsets.all(AppDimensions.spacingLg),
+        contentPadding: EdgeInsets.all(AppSpacing.lg),
         leading: Icon(
           player.displayIcon,
-          size: AppDimensions.iconMd,
+          size: AppIconSizing.md,
           color: context.playerColors.resolve(player.color),
         ),
         title: Text(
@@ -242,7 +240,7 @@ class _PlayerListTile extends StatelessWidget {
           index: index,
           child: const Icon(
             Icons.drag_indicator_rounded,
-            size: AppDimensions.iconSm,
+            size: AppIconSizing.sm,
           ),
         ),
         onTap: onTap,
@@ -270,7 +268,7 @@ class SpeedDialMenu extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.end,
-      spacing: AppDimensions.spacingMd,
+      spacing: AppSpacing.md,
       children: [
         _SpeedDialItem(
           index: 0,

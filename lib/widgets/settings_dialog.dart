@@ -23,24 +23,22 @@ class _SettingsDialogState extends State<SettingsDialog> {
     return Dialog(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      insetPadding: const EdgeInsets.symmetric(
-        horizontal: AppDimensions.spacingXxl,
-      ),
+      insetPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
       child: Container(
-        padding: const EdgeInsets.all(AppDimensions.spacingXxl),
+        padding: const EdgeInsets.all(AppSpacing.xxl),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surfaceContainerLowest,
-          borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
+          borderRadius: BorderRadius.circular(AppRadius.md),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text('Settings', style: Theme.of(context).textTheme.displayLarge),
-            const SizedBox(height: AppDimensions.spacingXl),
+            const SizedBox(height: AppSpacing.xl),
             Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
-              spacing: AppDimensions.spacingLg,
+              spacing: AppSpacing.lg,
               children: [
                 AppToggleIconButton(
                   iconData: Icons.volume_up_rounded,
@@ -68,11 +66,11 @@ class _SettingsDialogState extends State<SettingsDialog> {
                 ),
               ],
             ),
-            const SizedBox(height: AppDimensions.spacingLg),
+            const SizedBox(height: AppSpacing.lg),
             Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
-              spacing: AppDimensions.spacingLg,
+              spacing: AppSpacing.lg,
               children: [
                 AppToggleIconButton(
                   iconData: Icons.highlight_rounded,

@@ -34,18 +34,16 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Container(
           padding: .symmetric(
-            horizontal: AppDimensions.spacingXxl,
-            vertical: AppDimensions.spacingXxl,
+            horizontal: AppSpacing.xxl,
+            vertical: AppSpacing.xxl,
           ),
           child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: AppDimensions.maxWidth,
-              ),
+              constraints: const BoxConstraints(maxWidth: AppWidth.max),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                spacing: AppDimensions.spacingXxl,
+                spacing: AppSpacing.xxl,
                 children: [
                   Text(
                     'Reaction\nChain',
@@ -132,7 +130,7 @@ class _ActionButtonRowState extends State<_ActionButtonRow> {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      spacing: AppDimensions.spacingLg,
+      spacing: AppSpacing.md,
       children: [
         Flexible(
           child: AppIconButton(

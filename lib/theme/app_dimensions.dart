@@ -1,45 +1,63 @@
 import 'package:flutter/material.dart';
 
-class AppDimensions {
-  // Spacing
-  static const spacingSm = 4.0;
-  static const spacingMd = 8.0;
-  static const spacingLg = 16.0;
-  static const spacingXl = 24.0;
-  static const spacingXxl = 32.0;
-  static const spacingXxxl = 64.0;
+class AppSpacing {
+  static const sm = 4.0;
+  static const md = 8.0;
+  static const lg = 16.0;
+  static const xl = 24.0;
+  static const xxl = 32.0;
+  static const xxxl = 64.0;
+}
 
-  // Radius
-  static const radiusSm = 8.0;
-  static const radiusMd = 16.0;
+class AppRadius {
+  static const sm = 8.0;
+  static const md = 16.0;
+}
 
-  // Border
-  static const borderSm = 8.0;
+class AppBorder {
+  static const sm = 8.0;
+}
 
-  // Icon sizes
-  static const iconSm = 36.0;
-  static const iconMd = 48.0;
-  static const iconLg = 80.0;
-  static const iconXl = 128.0;
+class AppIconSizing {
+  static const sm = 36.0;
+  static const md = 48.0;
+  static const lg = 80.0;
+  static const xl = 128.0;
+}
 
-  // Icon button sizes
-  static const iconButtonSm = Size(48, 48);
-  static const iconButtonMd = Size(72, 72);
-  static const iconButtonLg = Size(96, 96);
-  static const iconButtonXl = Size(144, 144);
+class AppIconButtonSizing {
+  static const sm = Size(48, 48);
+  static const md = Size(72, 72);
+  static const lg = Size(96, 96);
+  static const xl = Size(144, 144);
+}
 
-  // Icon button minimum sizes
-  static const iconButtonLgMin = Size(72, 72);
-  static const iconButtonXlMin = Size(120, 120);
+class AppFontSizing {
+  static const sm = 16.0;
+  static const md = 24.0;
+  static const lg = 48.0;
+}
 
-  // Dot sizes
-  static const dotSm = 24.0;
-  static const dotMd = 36.0;
+class AppIconButtonSizingMin {
+  static const lg = Size(72, 72);
+  static const xl = Size(120, 120);
+}
 
-  // Cell sizes
+class AppDot {
+  static const sm = 24.0;
+  static const md = 36.0;
+}
+
+class AppOverlayWidth {
+  static const md = 240.0;
+  static const lg = 300.0;
+}
+
+class AppWidth {
+  static const min = 320.0;
+  static const max = 480.0;
+}
+
+class AppConstraints {
   static const cell = 48.0;
-
-  // Screen sizes
-  static const overlayWidthMd = 240.0;
-  static const maxWidth = 480.0;
 }

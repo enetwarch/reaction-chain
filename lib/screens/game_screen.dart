@@ -145,17 +145,17 @@ class _GameScreenState extends State<GameScreen> {
                   child: Center(
                     child: ConstrainedBox(
                       constraints: BoxConstraints(
-                        maxWidth: AppDimensions.maxWidth,
+                        maxWidth: AppWidth.max,
                         minHeight: constraints.maxHeight,
                       ),
                       child: Padding(
-                        padding: EdgeInsets.all(AppDimensions.spacingXxl),
+                        padding: EdgeInsets.all(AppSpacing.xxl),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             // Top Section
                             Column(
-                              spacing: AppDimensions.spacingMd,
+                              spacing: AppSpacing.md,
                               children: [
                                 _TopMenuBar(
                                   turnPlayer: gameController.currentPlayer,
@@ -203,7 +203,7 @@ class _GameScreenState extends State<GameScreen> {
                             // Middle Board
                             Padding(
                               padding: EdgeInsets.symmetric(
-                                vertical: AppDimensions.spacingLg,
+                                vertical: AppSpacing.lg,
                               ),
                               child: ListenableBuilder(
                                 listenable: highlightController,
@@ -288,23 +288,23 @@ class _TopMenuBarState extends State<_TopMenuBar> {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+        borderRadius: BorderRadius.circular(AppRadius.sm),
       ),
-      padding: EdgeInsets.all(AppDimensions.spacingMd),
+      padding: EdgeInsets.all(AppSpacing.md),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
-        spacing: AppDimensions.spacingMd,
+        spacing: AppSpacing.md,
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(left: AppDimensions.spacingMd),
+              padding: const EdgeInsets.only(left: AppSpacing.md),
               child: Row(
-                spacing: AppDimensions.spacingMd,
+                spacing: AppSpacing.md,
                 children: [
                   Icon(
                     widget.turnPlayer.displayIcon,
-                    size: AppDimensions.iconSm,
+                    size: AppIconSizing.sm,
                     color: context.playerColors.resolve(
                       widget.turnPlayer.color,
                     ),
@@ -322,7 +322,7 @@ class _TopMenuBarState extends State<_TopMenuBar> {
             ),
           ),
           Row(
-            spacing: AppDimensions.spacingMd,
+            spacing: AppSpacing.md,
             children: [
               AppIconButton(
                 iconData: Icons.home_rounded,
@@ -420,7 +420,7 @@ class _PlayerScoresState extends State<_PlayerScores> {
         controller: _scrollController,
         scrollDirection: Axis.horizontal,
         child: Row(
-          spacing: AppDimensions.spacingMd,
+          spacing: AppSpacing.md,
           children: [
             for (final player in widget.players) ...[
               Container(
@@ -467,18 +467,18 @@ class _PlayerScoreCard extends StatelessWidget {
         return Container(
           decoration: BoxDecoration(
             color: currentBg,
-            borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+            borderRadius: BorderRadius.circular(AppRadius.sm),
           ),
           padding: EdgeInsets.symmetric(
-            vertical: AppDimensions.spacingMd,
-            horizontal: AppDimensions.spacingLg,
+            vertical: AppSpacing.md,
+            horizontal: AppSpacing.lg,
           ),
           child: Row(
-            spacing: AppDimensions.spacingMd,
+            spacing: AppSpacing.md,
             children: [
               Icon(
                 Icons.circle,
-                size: AppDimensions.dotSm,
+                size: AppDot.sm,
                 color: isOut
                     ? Theme.of(context).colorScheme.onSurface
                     : context.playerColors.resolve(player.color),
@@ -515,22 +515,22 @@ class _BottomMenuBarState extends State<_BottomMenuBar> {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+        borderRadius: BorderRadius.circular(AppRadius.sm),
       ),
-      padding: const EdgeInsets.all(AppDimensions.spacingMd),
+      padding: const EdgeInsets.all(AppSpacing.md),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: AppDimensions.spacingMd),
+            padding: const EdgeInsets.only(left: AppSpacing.md),
             child: Text(
               'Turn ${widget.turnNumber.toString()}',
               style: Theme.of(context).textTheme.displayMedium,
             ),
           ),
           Row(
-            spacing: AppDimensions.spacingMd,
+            spacing: AppSpacing.md,
             children: [
               AppToggleIconButton(
                 iconData: Icons.flag_rounded,
