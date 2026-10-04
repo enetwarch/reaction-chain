@@ -45,6 +45,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
                   offIconData: Icons.volume_off_rounded,
                   value: widget.settings.soundEnabled,
                   size: AppIconButtonSize.large,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.surfaceContainerLow,
                   onChanged: (value) {
                     setState(() {
                       widget.settings.soundEnabled = value;
@@ -57,6 +60,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
                   offIconData: Icons.mobile_off_rounded,
                   value: widget.settings.vibrationEnabled,
                   size: AppIconButtonSize.large,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.surfaceContainerLow,
                   onChanged: (value) {
                     setState(() {
                       widget.settings.vibrationEnabled = value;
@@ -77,6 +83,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
                   offIconData: Icons.highlight_outlined,
                   value: widget.settings.highlightEnabled,
                   size: AppIconButtonSize.large,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.surfaceContainerLow,
                   onChanged: (value) {
                     setState(() {
                       widget.settings.highlightEnabled = value;
@@ -89,6 +98,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
                   offIconData: Icons.touch_app_outlined,
                   value: widget.settings.confirmationEnabled,
                   size: AppIconButtonSize.large,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.surfaceContainerLow,
                   onChanged: (value) {
                     setState(() {
                       widget.settings.confirmationEnabled = value;
