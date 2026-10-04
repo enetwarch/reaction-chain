@@ -55,6 +55,22 @@ At least six entries. One per real use. Every entry needs a commit link.
 - **What I kept, what I changed, and why:** I switched my process this week: instead of writing the documentation myself first, I gave my raw progress and ideas and had Claude articulate them into the report format, to save time after realizing in week 1 that documentation was taking longer than the coding itself. Even with the assistance of AI in the documentation, it still takes a massive chunk of time to accomplish, proofread, and correct the articulation of text.
 - **Commit:** [`d8e33ba`](https://github.com/HAU-6ADET/student-6adet-2134-enetwarch/commit/d8e33ba58ffe5392e9587c52d81635c2170dc91a), [`d13d9b6`](https://github.com/HAU-6ADET/student-6adet-2134-enetwarch/commit/d13d9b6ed51263e775bf2b14684a920206058739), and [`d780bbe`](https://github.com/HAU-6ADET/student-6adet-2134-enetwarch/commit/d780bbea6633a85c90094f64b983fbd29d678d1d)
 
+### 2026-09-30 - wave-stepping chain reaction refactor
+
+- **Tool:** Claude (web chat)
+- **What I asked for:** My `placeOrb()` ran the entire explosion cascade in one go, so the UI never saw intermediate boards and I couldn't animate explosions. I asked how to restructure it so the screen could show each step.
+- **What it gave back:** An explanation of the problem and a split of the logic into `placeOrb` (place only), `stepExplosions` (resolve exactly one wave and return the explosion events), and `endTurn` (recalculate counts, advance the turn, save). It also explained why the winner check has to happen per wave: orbs are conserved (critical mass equals neighbor count), so once one player owns everything a cascade can loop forever.
+- **What I kept, what I changed, and why:** I kept the three-method split and the per-wave winner check. I wrote the `GameScreen` side myself: the `_isAnimating` lock, the `mounted` checks after every await, and the delay before each wave. I put the delay before the wave so the placed orb has time to pop in. I decided to skip a "flying orbs" animation, so explosions are just orbs popping into neighbors.
+- **Commit:** [`9594674`](https://github.com/enetwarch/reaction-chain/commit/9594674dcb33ca5f02843f9c042b82a0f7153927)
+
+### 2026-10-03 - highlight and tap-to-confirm system
+
+- **Tool:** Claude (web chat)
+- **What I asked for:** Help with cell highlights on the board: blinking cells that are one orb from critical, tap-to-arm then tap-to-confirm on a cell, and a highlight on cells about to explode. Each should fade smoothly.
+- **What it gave back:** A `HighlightController` (separate from `GameController`, since highlights are presentation state and not saved), a `CellHighlight` type with a color resolver so colors follow the theme, and a two-layer cell animation: one controller for the blink pulse and one for the held highlight, so switching between modes doesn't make the color jump.
+- **What I kept, what I changed, and why:** I kept the controller split and the two-layer animation, and I asked why at each step, such as why a stored `Color` would go stale and why `animateTo` makes timings uneven. I wired up the settings integration myself (`highlightEnabled`, `confirmationEnabled`), added `hasArmed` and `hasBlinking`, picked the colors, and renamed `unstable` to `exploding` after finding that name clashed with my "near-critical" warning cells. I also moved my animation timings into `AppDurations` and split `AppDimensions` into per-category classes. The AI also made mistakes in this commit that I had to correct which will be explained in the section below.
+- **Commit:** [`d526bbc`](https://github.com/enetwarch/reaction-chain/commit/d526bbc1a0281bccfac916aca958194eb0fbd326)
+
 <!--
 ### YYYY-MM-DD - short title
 
@@ -85,6 +101,13 @@ scores zero.
 - **What was wrong with it:** The tint was so subtle the animation was effectively invisible — I couldn't tell it was animating at all when I tested it.
 - **What I did instead:** I did the fix myself by looking through my `AppArmedIconButton` component and replicating it in the player score cards, it took a while from doing it myself but it did work eventually.
 - **Commit:** [`d3ab70b`](https://github.com/enetwarch/reaction-chain/commit/d3ab70b)
+
+### Case 3 - highlight color snapped instead of fading
+
+- **What it gave me:** A cell highlight built on a single animation controller that lerped from the default background to whichever highlight color was current.
+- **What was wrong with it:** When a cell that was already blinking got armed, the target color switched but the animation value stayed mid-blink, so the color jumped in one frame and the 200ms fade covered almost nothing. Arming looked like it had no transition. Separately, the confirm tap called `disarm()` while the arm timer was running, which scheduled a stray blink in the middle of a cascade.
+- **What I did instead:** I debugged it by tapping through each case, then switched to two controllers, one for blink and one for the held highlight, with the second lerping from whatever the first currently shows. I also changed the confirm tap to use only `clear()`.
+- **Commit:** [`d526bbc`](https://github.com/enetwarch/reaction-chain/commit/d526bbc1a0281bccfac916aca958194eb0fbd326)
 
 <!--
 ### Case # - short title
@@ -119,6 +142,12 @@ it in your own words.
 - **Commit:** [`6f60bbb`](https://github.com/enetwarch/reaction-chain/commit/6f60bbb)
 - **What it does and why it is built this way:** A reusable dialog with a title, optional icon, description, and close/confirm callbacks, used for the "continue your saved game?" flow on the Home Screen. I wrote most of this myself, following the same `Dialog` → `ConstrainedBox` → `Container` structure as my own `PlayerCardDialog`, since I wanted it to feel consistent with a component I'd already built rather than introduce a new dialog shape. The icon is conditionally included via `if (icon != null)` inside the `Column`'s children so it doesn't reserve space when absent, and popping the dialog is left to the caller rather than handled internally, matching how `onDelete`/`onClose` already work in `PlayerCardDialog`.
 
+#### Settings dialog and settings integration
+
+- **File:** [`lib/data/settings.dart`](https://github.com/enetwarch/reaction-chain/blob/main/lib/data/settings.dart), [`lib/widgets/settings_dialog.dart`](https://github.com/enetwarch/reaction-chain/blob/main/lib/widgets/settings_dialog.dart), [`lib/controllers/highlight_controller.dart`](https://github.com/enetwarch/reaction-chain/blob/main/lib/controllers/highlight_controller.dart), and [`lib/screens/game_screen.dart`](https://github.com/enetwarch/reaction-chain/blob/main/lib/screens/game_screen.dart)
+- **Commit:** [`cb55789`](https://github.com/enetwarch/reaction-chain/commit/cb55789f9e9f2acfd968adae148935fbb0446ecc) and [`95b40a6`](https://github.com/enetwarch/reaction-chain/commit/95b40a64d8c5f8a428026fc3f6b700ba38484ff7)
+- **What it does and why it is built this way:** `Settings` is a plain data class holding the toggles (sound, music, confirmation, vibration, highlights), saved and loaded through `LocalStorageProvider` so they persist between sessions. `SettingsDialog` shows one toggle per setting and calls `onSettingsChange` whenever one flips. Each screen decides what that change means. In the game screen, the handler saves the settings and then updates the highlights. Turning highlights off clears them. Turning confirmation off while a cell is armed clears the armed cell, so a pending arm can't survive after the setting that created it is gone. `HighlightController` also checks `settings.highlightEnabled` inside `blink` and the exploding-cell method and calls `clear()` when it is off, so the highlight map stays the single source of truth for what is visible. I built it this way because settings are presentation state, so the toggles change what the highlight controller does and never touch the game rules. The toggle buttons come from `AppToggleIconButton`, which was AI-generated (see section 1), and I wrote the integration around them.
+
 <!--
 #### ...
 
@@ -140,6 +169,12 @@ it in your own words.
 - **File:** `lib/providers/local_storage_provider.dart`
 - **Commit:** [`b9b25be`](https://github.com/enetwarch/reaction-chain/commit/b9b25be9e28e6931a689c3837167d9a1f81c92a8)
 - **What it does and why I kept it:** A context-provider pattern that lets any screen or controller reach persistence via `LocalStorageProvider.of(context)` instead of having it threaded through every constructor. I originally sketched this for the Local Lobby Screen myself, then had it extended to the Game Screen and Home Screen. I understand it well because it's the same concept as React's Context API — an ancestor widget makes a value available to any descendant that asks for it via `context`, without prop-drilling it through every layer in between. Flutter's `InheritedWidget` (which this pattern is built on) is doing the same job `React.createContext` + `useContext` does.
+
+#### Orb animation (`_OrbCluster`)
+
+- **File:** [`lib/widgets/board_widget.dart`](https://github.com/enetwarch/reaction-chain/blob/main/lib/widgets/board_widget.dart)
+- **Commit:** [`75bce96`](https://github.com/enetwarch/reaction-chain/commit/75bce9695af82309bc6c3d5b0bf5b60919d27807)
+- **What it does and why I kept it:** `_OrbCluster` draws the orbs inside one cell and animates them when the orb count changes. Each orb is an `AnimatedAlign` with a `ValueKey(index)`. When the count changes, every orb gets a new target position, and because the key stays the same for the same slot, Flutter keeps that orb's existing State and slides it to the new position instead of rebuilding it from scratch. A newly added orb has a new key, so it starts fresh, and a `TweenAnimationBuilder` scales it from 0 to 1 with `Curves.easeOutBack`, which overshoots slightly and settles, so it feels like it pops in. The pop-in has a `duration` parameter that defaults to 200ms. I kept this approach because it uses implicit animations: there are no controllers to create or dispose, and the widget just describes where each orb should be. The keys work like `key` in a React list, since they tell the framework which item is which across rebuilds. The cluster is also passed as the `child` of the cell's `AnimatedBuilder`, so highlight animations don't rebuild it on every frame.
 
 <!--
 #### ...
