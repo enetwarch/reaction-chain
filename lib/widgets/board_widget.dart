@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:reaction_chain/data/board.dart';
-import 'package:reaction_chain/theme/app_dimensions.dart';
-import 'package:reaction_chain/theme/app_durations.dart';
-import 'package:reaction_chain/theme/player_colors.dart';
+import '../data/board.dart';
+import '../theme/app_dimensions.dart';
+import '../theme/app_durations.dart';
+import '../theme/player_colors.dart';
 
 class BoardWidget extends StatelessWidget {
   final Board board;

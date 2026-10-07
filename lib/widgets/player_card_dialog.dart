@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:reaction_chain/data/player.dart';
-import 'package:reaction_chain/theme/app_dimensions.dart';
-import 'package:reaction_chain/theme/player_colors.dart';
-import 'package:reaction_chain/components/icon_button.dart';
+import '../data/player.dart';
+import '../theme/app_dimensions.dart';
+import '../theme/player_colors.dart';
+import '../components/icon_button.dart';
 
 class PlayerCardDialog extends StatelessWidget {
   final Player player;

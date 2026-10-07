@@ -1,7 +1,6 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:reaction_chain/data/player.dart';
+import 'player.dart';
 
 typedef Coordinates = ({int row, int col});
 

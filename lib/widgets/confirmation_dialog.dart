@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:reaction_chain/components/icon_button.dart';
-import 'package:reaction_chain/theme/app_dimensions.dart';
+import '../components/icon_button.dart';
+import '../theme/app_dimensions.dart';
 
 class ConfirmationDialog extends StatelessWidget {
   final String title;

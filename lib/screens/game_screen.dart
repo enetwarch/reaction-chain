@@ -1,19 +1,19 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:reaction_chain/controllers/game_controller.dart';
-import 'package:reaction_chain/controllers/highlight_controller.dart';
-import 'package:reaction_chain/data/board.dart';
-import 'package:reaction_chain/data/game_state.dart';
-import 'package:reaction_chain/data/player.dart';
-import 'package:reaction_chain/data/settings.dart';
-import 'package:reaction_chain/providers/local_storage_provider.dart';
-import 'package:reaction_chain/theme/app_dimensions.dart';
-import 'package:reaction_chain/theme/app_durations.dart';
-import 'package:reaction_chain/theme/player_colors.dart';
-import 'package:reaction_chain/components/icon_button.dart';
-import 'package:reaction_chain/widgets/board_widget.dart';
-import 'package:reaction_chain/widgets/confirmation_dialog.dart';
-import 'package:reaction_chain/widgets/settings_dialog.dart';
+import '../controllers/game_controller.dart';
+import '../controllers/highlight_controller.dart';
+import '../data/board.dart';
+import '../data/game_state.dart';
+import '../data/player.dart';
+import '../data/settings.dart';
+import '../providers/local_storage_provider.dart';
+import '../theme/app_dimensions.dart';
+import '../theme/app_durations.dart';
+import '../theme/player_colors.dart';
+import '../components/icon_button.dart';
+import '../widgets/board_widget.dart';
+import '../widgets/confirmation_dialog.dart';
+import '../widgets/settings_dialog.dart';
 
 class GameScreen extends StatefulWidget {
   final List<Player>? players;

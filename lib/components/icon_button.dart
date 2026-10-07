@@ -2,8 +2,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:reaction_chain/theme/app_dimensions.dart';
-import 'package:reaction_chain/theme/app_durations.dart';
+import '../theme/app_dimensions.dart';
+import '../theme/app_durations.dart';
 
 enum AppIconButtonSize { small, medium, large, xl }
 

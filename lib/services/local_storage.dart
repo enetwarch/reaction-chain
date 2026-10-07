@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:reaction_chain/data/game_state.dart';
-import 'package:reaction_chain/data/player.dart';
-import 'package:reaction_chain/data/settings.dart';
+import '../data/game_state.dart';
+import '../data/player.dart';
+import '../data/settings.dart';
 
 class LocalStorage {
   final SharedPreferences _preferences;

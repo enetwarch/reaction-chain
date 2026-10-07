@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:reaction_chain/controllers/player_list_controller.dart';
-import 'package:reaction_chain/data/player.dart';
-import 'package:reaction_chain/providers/local_storage_provider.dart';
-import 'package:reaction_chain/theme/app_dimensions.dart';
-import 'package:reaction_chain/theme/app_durations.dart';
-import 'package:reaction_chain/theme/player_colors.dart';
-import 'package:reaction_chain/widgets/player_card_dialog.dart';
-import 'package:reaction_chain/components/icon_button.dart';
+import '../controllers/player_list_controller.dart';
+import '../data/player.dart';
+import '../providers/local_storage_provider.dart';
+import '../theme/app_dimensions.dart';
+import '../theme/app_durations.dart';
+import '../theme/player_colors.dart';
+import '../widgets/player_card_dialog.dart';
+import '../components/icon_button.dart';
 
 class LocalLobbyScreen extends StatefulWidget {
   const LocalLobbyScreen({super.key});

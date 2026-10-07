@@ -1,6 +1,6 @@
 // lib/theme/player_colors.dart
 import 'package:flutter/material.dart';
-import 'package:reaction_chain/data/player.dart';
+import '../data/player.dart';
 
 // Separate extension for player colors because there is no semantic
 // name for them in `ThemeData.colorScheme`.

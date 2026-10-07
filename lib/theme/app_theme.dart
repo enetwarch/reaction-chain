@@ -1,8 +1,8 @@
 // lib/theme/app_theme.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:reaction_chain/theme/app_dimensions.dart';
-import 'package:reaction_chain/theme/player_colors.dart';
+import 'app_dimensions.dart';
+import 'player_colors.dart';
 
 // Essentially the :root and CSS variables in Flutter.
 class AppTheme {

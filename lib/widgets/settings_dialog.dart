@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:reaction_chain/components/icon_button.dart';
-import 'package:reaction_chain/data/settings.dart';
-import 'package:reaction_chain/theme/app_dimensions.dart';
+import '../components/icon_button.dart';
+import '../data/settings.dart';
+import '../theme/app_dimensions.dart';
 
 class SettingsDialog extends StatefulWidget {
   final Settings settings;

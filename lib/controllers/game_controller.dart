@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:reaction_chain/data/board.dart';
-import 'package:reaction_chain/data/game_state.dart';
-import 'package:reaction_chain/data/player.dart';
-import 'package:reaction_chain/services/local_storage.dart';
+import '../data/board.dart';
+import '../data/game_state.dart';
+import '../data/player.dart';
+import '../services/local_storage.dart';
 
 class GameController extends ChangeNotifier {
   static const defaultRows = 9;

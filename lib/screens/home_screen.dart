@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:reaction_chain/providers/local_storage_provider.dart';
-import 'package:reaction_chain/theme/app_dimensions.dart';
-import 'package:reaction_chain/components/icon_button.dart';
-import 'package:reaction_chain/widgets/confirmation_dialog.dart';
-import 'package:reaction_chain/widgets/settings_dialog.dart';
-import 'package:reaction_chain/data/settings.dart';
+import '../providers/local_storage_provider.dart';
+import '../theme/app_dimensions.dart';
+import '../components/icon_button.dart';
+import '../widgets/confirmation_dialog.dart';
+import '../widgets/settings_dialog.dart';
+import '../data/settings.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

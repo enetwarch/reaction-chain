@@ -37,10 +37,10 @@ sealed class Player {
   });
 
   String get displayColor => switch (color) {
-    PlayerColor.red => "Red",
-    PlayerColor.green => "Green",
-    PlayerColor.blue => "Blue",
-    PlayerColor.yellow => "Yellow",
+    PlayerColor.red => 'Red',
+    PlayerColor.green => 'Green',
+    PlayerColor.blue => 'Blue',
+    PlayerColor.yellow => 'Yellow',
   };
 
   String get displayName;

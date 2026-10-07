@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:reaction_chain/data/game_state.dart';
-import 'package:reaction_chain/data/player.dart';
-import 'package:reaction_chain/providers/local_storage_provider.dart';
-import 'package:reaction_chain/screens/game_screen.dart';
-import 'package:reaction_chain/screens/home_screen.dart';
-import 'package:reaction_chain/screens/local_lobby_screen.dart';
-import 'package:reaction_chain/services/local_storage.dart';
-import 'package:reaction_chain/theme/app_scroll.dart';
-import 'package:reaction_chain/theme/app_theme.dart';
+import 'data/game_state.dart';
+import 'data/player.dart';
+import 'providers/local_storage_provider.dart';
+import 'screens/game_screen.dart';
+import 'screens/home_screen.dart';
+import 'screens/local_lobby_screen.dart';
+import 'services/local_storage.dart';
+import 'theme/app_scroll.dart';
+import 'theme/app_theme.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

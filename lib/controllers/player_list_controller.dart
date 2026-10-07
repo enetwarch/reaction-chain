@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:reaction_chain/data/player.dart';
-import 'package:reaction_chain/services/local_storage.dart';
+import '../data/player.dart';
+import '../services/local_storage.dart';
 
 // Needs to be passed to a `ListenableBuilder()` to work properly.
 class PlayerListController extends ChangeNotifier {

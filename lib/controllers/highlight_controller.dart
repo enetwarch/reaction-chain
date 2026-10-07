@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:reaction_chain/data/board.dart';
-import 'package:reaction_chain/data/settings.dart';
+import '../data/board.dart';
+import '../data/settings.dart';
 
 class HighlightController extends ChangeNotifier {
   final Settings settings;

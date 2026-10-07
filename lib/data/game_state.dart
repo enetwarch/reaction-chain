@@ -1,5 +1,5 @@
-import 'package:reaction_chain/data/board.dart';
-import 'package:reaction_chain/data/player.dart';
+import 'board.dart';
+import 'player.dart';
 
 typedef Move = ({Player player, Coordinates coordinates});
 
