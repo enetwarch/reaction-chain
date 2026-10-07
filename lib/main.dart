@@ -10,12 +10,16 @@ import 'theme/app_scroll.dart';
 import 'theme/app_theme.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  final binding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: binding);
 
   final preferences = await SharedPreferences.getInstance();
   final localStorage = LocalStorage(preferences);
+
+  FlutterNativeSplash.remove();
 
   runApp(
     DevicePreview(
@@ -54,10 +58,10 @@ class App extends StatelessWidget {
           '/home': (context) => HomeScreen(),
           '/local-lobby': (context) => LocalLobbyScreen(),
           '/game': (context) {
-            final args = ModalRoute.of(context)!.settings.arguments;
-            return args is GameState
-                ? GameScreen(savedState: args)
-                : GameScreen(players: args as List<Player>);
+            final arguments = ModalRoute.of(context)!.settings.arguments;
+            return arguments is GameState
+                ? GameScreen(savedState: arguments)
+                : GameScreen(players: arguments as List<Player>);
           },
         },
         home: HomeScreen(),
