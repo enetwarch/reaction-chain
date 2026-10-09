@@ -1,5 +1,6 @@
 # Demo video
 
+<!--
 **File:** `demo.mp4` in this folder, or the hosted link (see below)
 **Length:** aim for 3 to 5 minutes
 **Recorded on:** the device you used
@@ -36,3 +37,6 @@ it.
 - Notifications off.
 - Sensible sample data, not "asdf".
 - One unbroken take per feature. Say what you are doing while you do it.
+-->
+
+NOTE: The video presentation already has a demo portion, and this file feels redundant. Especially since it is a **VERY** bad practice to upload large files like videos in GitHub. I would like to keep the presentation video out of this GitHub repository for privacy reasons.
