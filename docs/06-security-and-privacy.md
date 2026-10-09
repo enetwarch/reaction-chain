@@ -1,42 +1,60 @@
 # Security and privacy
 
-This repository is public. Fill this in honestly and date it; it is checked as
-part of grading.
+This repository is public. This document records the project's security and
+privacy status as of the date below.
 
-**Last checked:** YYYY-MM-DD
+**Last checked:** 2026-10-09
 
 ## What this app stores
 
 | Data | Where it lives | Who can see it |
 | --- | --- | --- |
-| e.g. the user's task list | on the device (shared_preferences) | only that user |
+| Player names, colors, and player-list configuration | On the device via `shared_preferences` | Anyone with access to the device or its app data |
+| Current game state and saved game | On the device via `shared_preferences` | Anyone with access to the device or its app data |
+| App settings, such as sound, music, and vibration preferences | On the device via `shared_preferences` | Anyone with access to the device or its app data |
+
+Reaction Chain does not use an online backend or transmit this data to a
+remote service. Local storage should not be treated as encrypted or protected
+against someone with access to the device.
 
 ## Secrets
 
-- Values my app needs at run time: _(list the names, not the values)_
-- Where they live locally: `.env`, which is git-ignored
-- Where the deploy workflow gets them: repository secrets (Settings > Secrets
-  and variables > Actions; the walkthrough is on page 12 of
-  `content/extending-your-app/` in your workspace)
-- Anything my deployed web build carries that a visitor could read, and why that
-  is acceptable: _(a Supabase anon key protected by RLS, a Firebase config
-  protected by rules, or nothing)_
+- **Values my app needs at run time:** None. The app does not require API keys,
+  tokens, passwords, or other private configuration.
+- **Where they live locally:** Not applicable. No `.env` file or other private
+  runtime configuration is needed.
+- **Where the deploy workflow gets them:** No secrets are required by the
+  active deployment workflow. The commented-out Supabase references are
+  unused template scaffolding.
+- **Anything my deployed web build carries that a visitor could read, and why
+  that is acceptable:** No API keys or private credentials are intentionally
+  embedded in the web build. The deployed app contains its compiled Flutter
+  web assets, and the app does not connect to an online service.
 
 ## What protects the data on the service side
 
-- Firestore rules / Supabase RLS policies: _(paste or summarize them; "test mode"
-  is not an answer)_
-- If nothing leaves the device, say that instead.
+Nothing leaves the device for remote storage. The app has no backend,
+Firestore, Supabase, or other database service, so server-side security rules
+and row-level security policies do not apply.
 
 ## Checklist
 
-- [ ] `.env` (or `env.json`) is in `.gitignore`, and `.env.example` is committed
-- [ ] `git log -p | grep -i "api_key\|secret\|password\|token"` finds nothing real
-- [ ] No service account file, keystore or `service_role` key anywhere in the repo
-- [ ] Security rules or RLS policies written and tested, not left open
-- [ ] No real personal data in sample data, screenshots or the video
-- [ ] No course or university credentials anywhere
-- [ ] Anyone whose data appears in a test was asked first
+- [x] `.env` (or `env.json`) is not needed because the app has no private runtime configuration. Confirm that `.env` is ignored if one is introduced later.
+- [x] Git history was reviewed for passwords, secrets, API keys, and tokens; no real credentials were found.
+- [x] No service account file, keystore, or `service_role` key is used by the project.
+- [x] No backend security rules or RLS policies are needed because no remote database is used.
+- [x] Default sample player names are generic placeholders, not real personal data.
+- [x] No student number, personal email, phone number, or home address was found in the reviewed repository and commit messages.
+- [x] No course or university credentials were found in the reviewed repository.
+- [x] This is a solo project and does not collect classmates' personal data.
 
-If you found and revoked a key while doing this, say so here. Catching it is the
-right outcome, not an embarrassment.
+## Known issue
+
+The GitHub Actions workflow uses third-party actions pinned to version tags
+rather than immutable commit SHAs. This remains a known supply-chain security
+improvement. The workflow currently does not use active secrets, but pinning
+actions to verified commit SHAs would provide stronger protection against
+unexpected changes to upstream actions.
+
+No credentials were found that required revocation or rotation during the
+security review.
